@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithms - Python Learning Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --code-bg: #f8f9fa;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="dark"] { --primary-color:#4a9eff; --accent-color:#66b3ff; --text-color:#e0e0e0; --bg-color:#1a1a1a; --card-bg:#2d2d2d; --code-bg:#1e1e1e; --shadow:0 8px 32px rgba(0,0,0,0.3); }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:var(--text-color); background:var(--bg-color); transition:var(--transition); }
+        .container { max-width:1200px; margin:0 auto; padding:20px; }
+        .nav { background:var(--card-bg); padding:20px 0; box-shadow:var(--shadow); position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); }
+        .nav-content { max-width:1200px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
+        .nav-brand { display:flex; align-items:center; text-decoration:none; color:var(--primary-color); font-size:1.5rem; font-weight:bold; }
+        .nav-brand i { margin-right:10px; }
+        .nav-links { display:flex; gap:30px; align-items:center; }
+        .nav-links a { text-decoration:none; color:var(--text-color); transition:var(--transition); padding:8px 16px; border-radius:8px; }
+        .nav-links a:hover { color:var(--primary-color); background: rgba(55,118,171,0.1); }
+        .theme-toggle { background:rgba(55,118,171,0.1); border:none; color:var(--primary-color); padding:12px; border-radius:50%; cursor:pointer; font-size:1.1rem; transition:var(--transition); }
+        .theme-toggle:hover { background:var(--primary-color); color:white; }
+        .header { background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); color:white; padding:60px 0; text-align:center; position:relative; overflow:hidden; }
+        .header::before { content:''; position:absolute; inset:0; background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>'); background-size:cover; }
+        .header-content { position:relative; z-index:2; }
+        .header h1 { font-size:3rem; margin-bottom:10px; text-shadow:2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size:1.2rem; opacity:0.9; max-width:700px; margin:0 auto; }
+        .breadcrumb { margin:20px 0; display:flex; align-items:center; gap:10px; opacity:0.9; justify-content:center; }
+        .breadcrumb a { color:white; text-decoration:none; }
+        .breadcrumb a:hover { color:var(--secondary-color); }
+        .content { margin-top:40px; }
+        .section { background:var(--card-bg); border-radius:var(--border-radius); padding:40px; margin-bottom:30px; box-shadow:var(--shadow); position:relative; }
+        .section::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: linear-gradient(90deg, #e67e22, #d35400); border-radius:var(--border-radius) var(--border-radius) 0 0; }
+        .section-title { font-size:2rem; color:var(--primary-color); margin-bottom:20px; display:flex; align-items:center; gap:15px; }
+        .section-icon { width:50px; height:50px; background: linear-gradient(135deg, #e67e22, #d35400); border-radius:12px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.2rem; }
+        .subsection { margin:24px 0; }
+        .subsection-title { font-size:1.3rem; color:var(--primary-color); margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid rgba(55,118,171,0.12); }
+        .code-container { position:relative; margin:16px 0; border-radius:var(--border-radius); overflow:hidden; box-shadow:var(--shadow); }
+        .code-header { background:var(--primary-color); color:white; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; font-weight:500; }
+        .code-actions { display:flex; gap:10px; }
+        .code-btn { background:rgba(255,255,255,0.2); border:none; color:white; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition); }
+        .code-btn:hover { background:rgba(255,255,255,0.3); }
+        .code-content { background:var(--code-bg); padding:20px; overflow-x:auto; font-family:'Fira Code','Monaco','Consolas',monospace; font-size:1rem; line-height:1.7; white-space:pre-wrap; word-break:break-word; border-left:4px solid var(--primary-color); border-radius:0 0 var(--border-radius) var(--border-radius); }
+        .code-output { background:#1e1e1e; color:#00ff00; padding:15px 20px; font-family:monospace; font-size:0.9rem; border-top:1px solid rgba(255,255,255,0.1); display:none; }
+        .topic-navigation { display:flex; justify-content:space-between; margin-top:40px; gap:20px; }
+        .nav-card { flex:1; background:var(--card-bg); border-radius:var(--border-radius); padding:25px; text-decoration:none; color:inherit; box-shadow:var(--shadow); transition:var(--transition); border:2px solid transparent; }
+        .nav-card:hover { transform:translateY(-5px); border-color:var(--primary-color); }
+        .nav-card.prev { text-align:left; } .nav-card.next { text-align:right; }
+        .nav-label { font-size:0.9rem; color:var(--primary-color); margin-bottom:5px; }
+        .nav-title { font-size:1.2rem; font-weight:600; }
+        @media (max-width:768px){ .nav-content{flex-direction:column; gap:20px;} .nav-links{gap:15px;} .header h1{font-size:2rem;} .section{padding:25px;} .topic-navigation{flex-direction:column;} }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand"><i class="fab fa-python"></i>Python Learning Hub</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="data-structures.html">Previous</a>
+                <a href="advanced-topics.html">Next Topic</a>
+                <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb"><a href="index.html">Home</a><i class="fas fa-chevron-right"></i><span>Algorithms</span></div>
+                <h1>Algorithms in Python</h1>
+                <p>Binary search, bisect module, dynamic programming setup, heaps, sorting and custom comparators with practical examples</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <!-- 1. Bisect module -->
+            <section class="section" id="bisect">
+                <h2 class="section-title"><div class="section-icon">📌</div>Binary Search Helpers: bisect</h2>
+                <div class="subsection">
+                    <h3 class="subsection-title">Core Functions</h3>
+                    <table class="comparison-table">
+                        <thead><tr><th>Function</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td>bisect_left(a, x)</td><td>Insert position before existing x</td></tr>
+                            <tr><td>bisect_right(a, x)</td><td>Insert position after existing x</td></tr>
+                            <tr><td>insort_left(a, x)</td><td>Insert x using bisect_left</td></tr>
+                            <tr><td>insort_right(a, x)</td><td>Insert x using bisect_right</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - bisect module in action</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('bisect')">Run</button></div></div>
+                    <div class="code-content">import bisect
+
+a = [1, 2, 4, 4, 5]
+print(f"Sorted array: {a}")
+print(f"bisect_left(a, 4): {bisect.bisect_left(a, 4)}")
+print(f"bisect_right(a, 4): {bisect.bisect_right(a, 4)}")
+
+a_copy = a.copy(); bisect.insort(a_copy, 3)
+print(f"After insort(a, 3): {a_copy}")
+
+a_copy2 = a.copy(); bisect.insort_left(a_copy2, 4)
+print(f"After insort_left(a, 4): {a_copy2}")</div>
+                    <div class="code-output" id="bisect-output"></div>
+                </div>
+            </section>
+
+            <!-- 2. Manual binary search (bisect impl) -->
+            <section class="section" id="binary-search">
+                <h2 class="section-title"><div class="section-icon">🔎</div>Binary Search Implementations</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - bisect_left/right implementations</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('bsearch')">Run</button></div></div>
+                    <div class="code-content">def bisect_left_implementation(a, x):
+    lo, hi = 0, len(a)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if a[mid] < x:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+
+def bisect_right_implementation(a, x):
+    lo, hi = 0, len(a)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if a[mid] <= x:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+
+test_array = [1, 3, 3, 3, 5, 7, 9]
+target = 3
+print(f"bisect_left({target}): {bisect_left_implementation(test_array, target)}")
+print(f"bisect_right({target}): {bisect_right_implementation(test_array, target)}")</div>
+                    <div class="code-output" id="bsearch-output"></div>
+                </div>
+                <div class="subsection">
+                    <h3 class="subsection-title">Time Complexity</h3>
+                    <table class="comparison-table"><tbody>
+                        <tr><td>Search position</td><td>O(log n)</td></tr>
+                        <tr><td>Insertion (with shifting)</td><td>O(n)</td></tr>
+                    </tbody></table>
+                </div>
+            </section>
+
+            <!-- 3. Dynamic Programming initialization -->
+            <section class="section" id="dp">
+                <h2 class="section-title"><div class="section-icon">🧮</div>Dynamic Programming Initialization</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - DP tables: right vs wrong</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('dp')">Run</button></div></div>
+                    <div class="code-content">n = 10
+dp_zeros = [0] * n
+dp_bools = [False] * n
+print(f"dp_zeros = [0] * {n}: {dp_zeros}")
+print(f"dp_bools = [False] * {n}: {dp_bools}")
+
+m, n2 = 5, 5
+dp_wrong = [[False] * n2] * m
+dp_wrong[0][0] = True
+print(f"WRONG 2D init (all rows aliased): {dp_wrong}")
+
+dp_correct = [[False] * n2 for _ in range(m)]
+dp_correct[0][0] = True
+print("Correct 2D init (independent rows):")
+for i, row in enumerate(dp_correct):
+    print(f"  Row {i}: {row}")</div>
+                    <div class="code-output" id="dp-output"></div>
+                </div>
+            </section>
+
+            <!-- 4. Heaps / Priority Queues -->
+            <section class="section" id="heaps">
+                <h2 class="section-title"><div class="section-icon">⛰️</div>Priority Queues with heapq</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - heapq basics</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('heap')">Run</button></div></div>
+                    <div class="code-content">import heapq
+
+heap = []
+for elem in [5, 1, 3, 8, 2]:
+    heapq.heappush(heap, elem)
+print(f"Min-heap after pushes: {heap}")
+out = []
+while heap:
+    out.append(heapq.heappop(heap))
+print(f"Popped ascending: {out}")
+
+max_heap = []
+for x in [5, 1, 3, 8, 2]:
+    heapq.heappush(max_heap, -x)
+largest = -heapq.heappop(max_heap)
+print(f"Max-heap trick largest: {largest}")
+
+task_heap = []
+for pr, task in [(2, 'task A'), (1, 'task B'), (3, 'task C')]:
+    heapq.heappush(task_heap, (pr, task))
+order = []
+while task_heap:
+    order.append(heapq.heappop(task_heap))
+print(f"Tasks by priority: {order}")</div>
+                    <div class="code-output" id="heap-output"></div>
+                </div>
+            </section>
+
+            <!-- 5. Sorting and custom sorting -->
+            <section class="section" id="sorting-advanced">
+                <h2 class="section-title"><div class="section-icon">🧭</div>Sorting and Custom Comparators</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - sort vs sorted with key</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('sortvs')">Run</button></div></div>
+                    <div class="code-content">print("sort() vs sorted() summary:")
+print("list.sort() is in-place; sorted(iterable) returns a new list")
+
+nums = [4, 1, 7, 3]
+nums_copy = nums.copy(); nums_copy.sort(); print(f"sort(): {nums_copy}")
+print(f"sorted(): {sorted(nums)}; original: {nums}")
+
+words = ["apple", "pear", "kiwi", "banana"]
+print(f"Descending: {sorted(words, reverse=True)}")
+print(f"By length: {sorted(words, key=len)}")
+print(f"By last letter: {sorted(words, key=lambda w: w[-1])}")</div>
+                    <div class="code-output" id="sortvs-output"></div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header"><span>Python - cmp_to_key comparator</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('cmp')">Run</button></div></div>
+                    <div class="code-content">from functools import cmp_to_key
+
+def cmp_len(a, b):
+    return len(a) - len(b)
+
+words = ["pear", "apple", "fig", "banana"]
+print(f"Sorted by length: {sorted(words, key=cmp_to_key(cmp_len))}")
+
+def cmp_complex(a, b):
+    len_diff = len(a) - len(b)
+    if len_diff != 0:
+        return len_diff
+    return -1 if a < b else (1 if a > b else 0)
+
+print(f"Complex sort: {sorted(words, key=cmp_to_key(cmp_complex))}")</div>
+                    <div class="code-output" id="cmp-output"></div>
+            </div>
+            </section>
+
+            <!-- 6. Lambda Functions -->
+            <section class="section" id="lambdas">
+                <h2 class="section-title"><div class="section-icon">λ</div>Lambda Functions</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Lambdas for quick operations</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('lambdas')">Run</button></div></div>
+                    <div class="code-content"># Basic lambda
+add = lambda a, b: a + b
+print(f"add(3, 5) = {add(3, 5)}")
+
+# Lambda with sorting
+numbers = [1, 4, 2, 8, 5, 7]
+print(f"Sorted by last digit: {sorted(numbers, key=lambda x: x % 10)}")
+
+# Lambda with strings
+names = ["Alice", "Bob", "Charlie", "David"]
+print(f"Sorted by length: {sorted(names, key=lambda name: len(name))}")
+print(f"Sorted by last char: {sorted(names, key=lambda name: name[-1])}")
+
+# Lambda in filter/map
+nums = [1,2,3,4,5,6,7,8,9,10]
+evens = list(filter(lambda x: x % 2 == 0, nums))
+squares = list(map(lambda x: x**2, nums[:5]))
+print(f"Evens: {evens}; First 5 squares: {squares}")</div>
+                    <div class="code-output" id="lambdas-output"></div>
+                </div>
+            </section>
+
+            <!-- 7. Algorithm Cheat Sheet -->
+            <section class="section" id="cheatsheet">
+                <h2 class="section-title"><div class="section-icon">📎</div>Algorithm Cheat Sheet</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Handy snippets</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button></div></div>
+                    <div class="code-content"># DP initialization (2D)
+dp = [[False]*n for _ in range(m)]
+
+# Min-heap
+import heapq
+heapq.heappush(h, x)
+min_val = heapq.heappop(h)
+
+# Max-heap
+heapq.heappush(h, -x)
+max_val = -heapq.heappop(h)
+
+# In-place sort
+my_list.sort(reverse=True)
+
+# New sorted list
+new_list = sorted(my_list, key=lambda x: ...)
+
+# C++-style comparator
+from functools import cmp_to_key
+sorted(items, key=cmp_to_key(my_cmp))
+
+# Binary search
+import bisect
+pos = bisect.bisect_left(sorted_list, target)</div>
+                </div>
+            </section>
+
+            <!-- 8. Practical algorithm examples -->
+            <section class="section" id="practical">
+                <h2 class="section-title"><div class="section-icon">🧑‍💻</div>Practical Examples</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Insert maintaining order</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('practical')">Run</button></div></div>
+                    <div class="code-content">import bisect
+
+def insert_maintaining_order(sorted_list, value):
+    pos = bisect.bisect_left(sorted_list, value)
+    sorted_list.insert(pos, value)
+    return sorted_list
+
+sorted_nums = [1, 3, 5, 7, 9]
+print(f"After inserting 6: {insert_maintaining_order(sorted_nums.copy(), 6)}")
+
+from functools import cmp_to_key
+class Student:
+    def __init__(self, name, grade, age):
+        self.name, self.grade, self.age = name, grade, age
+    def __repr__(self):
+        return f"Student('{self.name}', {self.grade}, {self.age})"
+
+students = [Student("Alice", 85, 20), Student("Bob", 90, 19), Student("Charlie", 85, 21), Student("David", 90, 20)]
+
+def student_comparator(s1, s2):
+    grade_diff = s2.grade - s1.grade
+    if grade_diff != 0:
+        return grade_diff
+    return s1.age - s2.age
+
+print(f"Sorted students: {sorted(students, key=cmp_to_key(student_comparator))}")</div>
+                    <div class="code-output" id="practical-output"></div>
+                </div>
+            </section>
+            </div>
+
+        <div class="topic-navigation">
+            <a href="data-structures.html" class="nav-card prev"><div class="nav-label">← Previous</div><div class="nav-title">Data Structures</div></a>
+            <a href="advanced-topics.html" class="nav-card next"><div class="nav-label">Next →</div><div class="nav-title">Advanced Topics</div></a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        function toggleTheme(){ const body=document.body; const icon=document.getElementById('theme-icon'); if(body.getAttribute('data-theme')==='dark'){ body.removeAttribute('data-theme'); icon.className='fas fa-moon'; localStorage.setItem('theme','light'); } else { body.setAttribute('data-theme','dark'); icon.className='fas fa-sun'; localStorage.setItem('theme','dark'); } }
+        function initTheme(){ const saved=localStorage.getItem('theme'); const icon=document.getElementById('theme-icon'); if(saved==='dark'){ document.body.setAttribute('data-theme','dark'); icon.className='fas fa-sun'; } }
+        function copyCode(btn){ const code=btn.closest('.code-container').querySelector('.code-content').textContent; navigator.clipboard.writeText(code).then(()=>{ const t=btn.textContent; btn.textContent='Copied!'; setTimeout(()=>btn.textContent=t,2000); }); }
+        function runExample(type){ const out = {
+            bisect:`Sorted array: [1, 2, 4, 4, 5]
+bisect_left(a, 4): 2
+bisect_right(a, 4): 4
+After insort(a, 3): [1, 2, 3, 4, 4, 5]
+After insort_left(a, 4): [1, 2, 4, 4, 4, 5]`,
+            bsearch:`bisect_left(3): 1
+bisect_right(3): 4`,
+            dp:`dp_zeros = [0] * 10: [0,0,0,0,0,0,0,0,0,0]
+dp_bools = [False] * 10: [False,False,False,False,False,False,False,False,False,False]
+WRONG 2D init (all rows aliased): [[True, False, False, False, False],[True, False, False, False, False],[True, False, False, False, False],[True, False, False, False, False],[True, False, False, False, False]]
+Correct 2D init (independent rows):
+  Row 0: [True, False, False, False, False]
+  Row 1: [False, False, False, False, False]
+  Row 2: [False, False, False, False, False]
+  Row 3: [False, False, False, False, False]
+  Row 4: [False, False, False, False, False]`,
+            heap:`Min-heap after pushes: [1, 2, 3, 8, 5]
+Popped ascending: [1, 2, 3, 5, 8]
+Max-heap trick largest: 8
+Tasks by priority: [(1, 'task B'), (2, 'task A'), (3, 'task C')]`,
+            sortvs:`sort(): [1, 3, 4, 7]
+sorted(): [1, 3, 4, 7]; original: [4, 1, 7, 3]
+Descending: ['pear', 'kiwi', 'banana', 'apple']
+By length: ['kiwi', 'pear', 'apple', 'banana']
+By last letter: ['banana', 'apple', 'pear', 'kiwi']`,
+            cmp:`Sorted by length: ['fig', 'pear', 'apple', 'banana']
+Complex sort: ['fig', 'pear', 'apple', 'banana']`,
+            lambdas:`add(3, 5) = 8
+Sorted by last digit: [10, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Sorted by length: ['Bob', 'Alice', 'David', 'Charlie']
+Sorted by last char: ['Charlie', 'Alice', 'Bob', 'David']
+Evens: [2, 4, 6, 8, 10]; First 5 squares: [1, 4, 9, 16, 25]`,
+            practical:`After inserting 6: [1, 3, 5, 6, 7, 9]
+Sorted students: [Student('Bob', 90, 19), Student('David', 90, 20), Student('Alice', 85, 20), Student('Charlie', 85, 21)]`
+        };
+        const el = document.getElementById(type+'-output'); el.textContent = out[type]; el.style.display='block'; }
+        function trackVisit(){ let visited = JSON.parse(localStorage.getItem('visitedPages')||'[]'); const page='algorithms.html'; if(!visited.includes(page)){ visited.push(page); localStorage.setItem('visitedPages', JSON.stringify(visited)); } }
+        document.addEventListener('DOMContentLoaded', ()=>{ initTheme(); trackVisit(); });
+    </script>
+</body>
+</html>
+
+

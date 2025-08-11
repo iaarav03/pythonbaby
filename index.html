@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Learning Hub - Interactive Python Reference</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            color: white;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .main-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Search and Filter */
+        .search-filter-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 24px 18px 60px;
+            font-size: 1.2rem;
+            border: 2px solid transparent;
+            border-radius: 50px;
+            background: rgba(55, 118, 171, 0.1);
+            color: var(--text-color);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(55, 118, 171, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .filter-tag {
+            padding: 10px 20px;
+            background: rgba(55, 118, 171, 0.1);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Topics Grid */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .topic-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 35px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .topic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .topic-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .topic-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .topic-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 15px;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .topic-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .topic-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .topic-description {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            opacity: 0.8;
+        }
+
+        .topic-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .topic-features li {
+            padding: 8px 0;
+            color: var(--text-color);
+            position: relative;
+            padding-left: 30px;
+            opacity: 0.8;
+        }
+
+        .topic-features li::before {
+            content: '🐍';
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        .topic-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(55, 118, 171, 0.1);
+        }
+
+        .difficulty-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-beginner {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .difficulty-intermediate {
+            background: rgba(255, 193, 7, 0.1);
+            color: #FFC107;
+        }
+
+        .difficulty-advanced {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+        }
+
+        .topic-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .topic-card:hover .topic-arrow {
+            transform: translateX(10px);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin: 50px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .progress-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(55, 118, 171, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 1s ease-in-out;
+            border-radius: 6px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 40px 0;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .topics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filter-tags {
+                justify-content: flex-start;
+            }
+            
+            .topic-card {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .topic-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .topic-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .topic-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .topic-card:nth-child(1) { animation-delay: 0.1s; }
+        .topic-card:nth-child(2) { animation-delay: 0.2s; }
+        .topic-card:nth-child(3) { animation-delay: 0.3s; }
+        .topic-card:nth-child(4) { animation-delay: 0.4s; }
+        .topic-card:nth-child(5) { animation-delay: 0.5s; }
+        .topic-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Hidden class for filtering */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            
+            <h1 class="main-title">Python Learning Hub</h1>
+            <p class="subtitle">Master Python programming with comprehensive guides, interactive examples, and hands-on practice exercises</p>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <section class="search-filter-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search Python topics, concepts, or examples..." onkeyup="searchTopics()">
+            </div>
+            
+            <div class="filter-tags">
+                <span class="filter-tag active" onclick="filterTopics('all')">All Topics</span>
+                <span class="filter-tag" onclick="filterTopics('beginner')">Beginner</span>
+                <span class="filter-tag" onclick="filterTopics('intermediate')">Intermediate</span>
+                <span class="filter-tag" onclick="filterTopics('advanced')">Advanced</span>
+                <span class="filter-tag" onclick="filterTopics('practical')">Practical</span>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stat-card">
+                <i class="fas fa-book-open stat-icon"></i>
+                <span class="stat-number" data-target="9">0</span>
+                <span class="stat-label">Comprehensive Topics</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-code stat-icon"></i>
+                <span class="stat-number" data-target="150">0</span>
+                <span class="stat-label">Code Examples</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-lightbulb stat-icon"></i>
+                <span class="stat-number" data-target="300">0</span>
+                <span class="stat-label">Tips & Tricks</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-tasks stat-icon"></i>
+                <span class="stat-number" data-target="50">0</span>
+                <span class="stat-label">Practice Exercises</span>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="progress-section">
+            <div class="progress-header">
+                <h2 class="progress-title">Your Learning Progress</h2>
+                <p>Track your Python mastery journey</p>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% Complete - Start your Python journey!</div>
+        </section>
+
+        <!-- Topics Grid -->
+        <section class="topics-grid" id="topicsGrid">
+            <a href="basic-concepts.html" class="topic-card" data-keywords="basics fundamentals mutable immutable types variables operators precedence" data-difficulty="beginner" data-category="fundamental">
+                <div class="topic-header">
+                    <div class="topic-icon">🎯</div>
+                    <div>
+                        <div class="topic-title">Basic Concepts</div>
+                        <div class="topic-subtitle">Foundation</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Master Python fundamentals including data types, variables, operators, and core programming concepts that form the foundation of Python programming.
+                </div>
+                <ul class="topic-features">
+                    <li>Mutable vs Immutable types</li>
+                    <li>Operator precedence & associativity</li>
+                    <li>List comprehensions</li>
+                    <li>Memory management concepts</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-beginner">Beginner</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="string-operations.html" class="topic-card" data-keywords="strings text manipulation find index slicing parsing" data-difficulty="beginner" data-category="practical">
+                <div class="topic-header">
+                    <div class="topic-icon">📝</div>
+                    <div>
+                        <div class="topic-title">String Operations</div>
+                        <div class="topic-subtitle">Text Processing</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Comprehensive guide to string manipulation, from basic slicing to advanced pattern matching and text processing techniques.
+                </div>
+                <ul class="topic-features">
+                    <li>String slicing & indexing mastery</li>
+                    <li>find() vs index() methods</li>
+                    <li>Pattern searching techniques</li>
+                    <li>Real-world parsing examples</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-beginner">Beginner</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="data-structures.html" class="topic-card" data-keywords="lists dictionaries sets tuples collections iteration sorting" data-difficulty="intermediate" data-category="fundamental">
+                <div class="topic-header">
+                    <div class="topic-icon">🗃️</div>
+                    <div>
+                        <div class="topic-title">Data Structures</div>
+                        <div class="topic-subtitle">Collections</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Deep dive into Python's built-in data structures with practical examples, common pitfalls, and performance optimization techniques.
+                </div>
+                <ul class="topic-features">
+                    <li>Lists, dicts, sets, and tuples</li>
+                    <li>Safe iteration patterns</li>
+                    <li>Sorting algorithms & methods</li>
+                    <li>Performance considerations</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="algorithms.html" class="topic-card" data-keywords="algorithms binary search dynamic programming heaps sorting" data-difficulty="advanced" data-category="algorithmic">
+                <div class="topic-header">
+                    <div class="topic-icon">🧠</div>
+                    <div>
+                        <div class="topic-title">Algorithms</div>
+                        <div class="topic-subtitle">Problem Solving</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Master essential algorithms including binary search, dynamic programming, and heap operations with practical implementations.
+                </div>
+                <ul class="topic-features">
+                    <li>Binary search & bisect module</li>
+                    <li>Dynamic programming patterns</li>
+                    <li>Priority queues with heapq</li>
+                    <li>Custom sorting techniques</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-advanced">Advanced</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="advanced-topics.html" class="topic-card" data-keywords="advanced file handling decorators generators context managers" data-difficulty="advanced" data-category="advanced">
+                <div class="topic-header">
+                    <div class="topic-icon">🚀</div>
+                    <div>
+                        <div class="topic-title">Advanced Topics</div>
+                        <div class="topic-subtitle">Expert Level</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Explore advanced Python features including file handling, decorators, generators, and professional development practices.
+                </div>
+                <ul class="topic-features">
+                    <li>File I/O operations</li>
+                    <li>Context managers & decorators</li>
+                    <li>Memory optimization</li>
+                    <li>Professional best practices</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-advanced">Advanced</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="practice-examples.html" class="topic-card" data-keywords="practice exercises examples hands-on coding challenges" data-difficulty="intermediate" data-category="practical">
+                <div class="topic-header">
+                    <div class="topic-icon">💻</div>
+                    <div>
+                        <div class="topic-title">Practice Examples</div>
+                        <div class="topic-subtitle">Hands-On</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Reinforce your learning with practical coding exercises, real-world examples, and interactive challenges.
+                </div>
+                <ul class="topic-features">
+                    <li>Interactive code examples</li>
+                    <li>Common mistakes & solutions</li>
+                    <li>Performance optimization tips</li>
+                    <li>Challenge exercises</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="list-game.html" class="topic-card" data-keywords="lists list methods slicing indexing comprehension sorting pitfalls exam quiz game" data-difficulty="intermediate" data-category="practical">
+                <div class="topic-header">
+                    <div class="topic-icon">🎮</div>
+                    <div>
+                        <div class="topic-title">List Mastery Game</div>
+                        <div class="topic-subtitle">Exam Prep</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    A fast-paced quiz game covering all tricky list questions: slicing, methods, mutation pitfalls, copying/identity, sorting keys, nested lists, and complexity.
+                </div>
+                <ul class="topic-features">
+                    <li>Practice & exam modes</li>
+                    <li>Hints, explanations, and re-try misses</li>
+                    <li>Local progress & streak tracking</li>
+                    <li>Designed for 100% exam readiness</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="file-handling.html" class="topic-card" data-keywords="file handling files reading writing context managers seek tell binary text modes open close with statement" data-difficulty="intermediate" data-category="advanced">
+                <div class="topic-header">
+                    <div class="topic-icon">📁</div>
+                    <div>
+                        <div class="topic-title">File Handling</div>
+                        <div class="topic-subtitle">I/O Operations</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Complete guide to Python file operations including reading, writing, context managers, binary files, and advanced techniques like seek/tell operations.
+                </div>
+                <ul class="topic-features">
+                    <li>File modes & operations explained</li>
+                    <li>Context managers & safe file handling</li>
+                    <li>Random access with seek() & tell()</li>
+                    <li>Tricky exam questions & solutions</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+
+            <a href="modules-packages.html" class="topic-card" data-keywords="modules packages import __init__.py namespace organization code reusability python path sys.path" data-difficulty="intermediate" data-category="advanced">
+                <div class="topic-header">
+                    <div class="topic-icon">📦</div>
+                    <div>
+                        <div class="topic-title">Modules & Packages</div>
+                        <div class="topic-subtitle">Code Organization</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Master Python code organization with modules and packages. Learn importing strategies, __init__.py usage, namespace management, and best practices.
+                </div>
+                <ul class="topic-features">
+                    <li>Creating & importing modules</li>
+                    <li>Package structure & __init__.py</li>
+                    <li>Empty vs non-empty __init__.py examples</li>
+                    <li>Built-in modules & best practices</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-book"></i> Documentation</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+            <p>© 2024 Python Learning Hub | Built with ❤️ for Python learners</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme from localStorage
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Search functionality
+        function searchTopics() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.topic-card');
+            
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+                const title = card.querySelector('.topic-title').textContent.toLowerCase();
+                const description = card.querySelector('.topic-description').textContent.toLowerCase();
+                
+                if (keywords.includes(searchTerm) || 
+                    title.includes(searchTerm) || 
+                    description.includes(searchTerm) ||
+                    searchTerm === '') {
+                    card.style.display = 'block';
+                    card.classList.remove('hidden');
+                } else {
+                    card.style.display = 'none';
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Filter functionality
+        function filterTopics(category) {
+            const cards = document.querySelectorAll('.topic-card');
+            const filterTags = document.querySelectorAll('.filter-tag');
+            
+            // Update active filter tag
+            filterTags.forEach(tag => tag.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            cards.forEach(card => {
+                const difficulty = card.getAttribute('data-difficulty');
+                const cardCategory = card.getAttribute('data-category');
+                
+                if (category === 'all' || 
+                    difficulty === category || 
+                    cardCategory === category ||
+                    (category === 'practical' && (cardCategory === 'practical' || difficulty === 'intermediate'))) {
+                    card.style.display = 'block';
+                    card.classList.remove('hidden');
+                } else {
+                    card.style.display = 'none';
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Animate numbers
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number');
+            
+            numbers.forEach(number => {
+                const target = parseInt(number.getAttribute('data-target'));
+                const increment = target / 50;
+                let current = 0;
+                
+                const updateNumber = () => {
+                    if (current < target) {
+                        current += increment;
+                        number.textContent = Math.ceil(current);
+                        requestAnimationFrame(updateNumber);
+                    } else {
+                        number.textContent = target;
+                    }
+                };
+                
+                updateNumber();
+            });
+        }
+
+        // Progress tracking (simulated)
+        function updateProgress() {
+            const visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            const totalPages = 9; // added modules-packages.html
+            const progress = (visitedPages.length / totalPages) * 100;
+            
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            setTimeout(() => {
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `${Math.round(progress)}% Complete - ${visitedPages.length} of ${totalPages} topics explored`;
+            }, 1000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            animateNumbers();
+            updateProgress();
+            
+            // Add click tracking for progress
+            const topicCards = document.querySelectorAll('.topic-card');
+            topicCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const href = this.getAttribute('href');
+                    let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+                    
+                    if (!visitedPages.includes(href)) {
+                        visitedPages.push(href);
+                        localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+                    }
+                });
+            });
+        });
+
+        // Smooth scroll for any internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

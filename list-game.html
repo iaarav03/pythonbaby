@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List Mastery Game - Python Learning Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #3776ab;
+      --secondary-color: #ffd43b;
+      --accent-color: #306998;
+      --text-color: #333;
+      --bg-color: #ffffff;
+      --card-bg: #ffffff;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --border-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --success: #27ae60;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #4a9eff;
+      --accent-color: #66b3ff;
+      --text-color: #e0e0e0;
+      --bg-color: #1a1a1a;
+      --card-bg: #2d2d2d;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background: var(--bg-color);
+      transition: var(--transition);
+    }
+
+    .nav { background: var(--card-bg); padding: 20px 0; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); }
+    .nav-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { display: flex; align-items: center; text-decoration: none; color: var(--primary-color); font-size: 1.5rem; font-weight: bold; }
+    .nav-brand i { margin-right: 10px; }
+    .nav-links { display: flex; gap: 16px; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--text-color); padding: 8px 14px; border-radius: 8px; transition: var(--transition); }
+    .nav-links a:hover { color: var(--primary-color); background: rgba(55, 118, 171, 0.1); }
+    .theme-toggle { background: rgba(55, 118, 171, 0.1); border: none; color: var(--primary-color); padding: 10px; border-radius: 50%; cursor: pointer; font-size: 1.05rem; transition: var(--transition); }
+    .theme-toggle:hover { background: var(--primary-color); color: white; }
+
+    .header { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; padding: 50px 0; text-align: center; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>'); background-size: cover; }
+    .header-content { position: relative; z-index: 2; }
+    .header h1 { font-size: 2.6rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    .header p { font-size: 1.05rem; opacity: 0.95; max-width: 800px; margin: 0 auto; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+    .game-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-top: 24px; }
+    .panel { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow); padding: 22px; }
+    .panel h2 { font-size: 1.3rem; color: var(--primary-color); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
+    .stat { background: rgba(55, 118, 171, 0.08); border-radius: 12px; padding: 12px; text-align: center; }
+    .stat .num { font-weight: 700; font-size: 1.2rem; color: var(--primary-color); }
+    .stat .label { font-size: 0.85rem; opacity: 0.85; }
+
+    .controls { display: grid; gap: 10px; margin-top: 14px; }
+    .btn { padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: var(--transition); }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-primary:hover { background: var(--accent-color); transform: translateY(-1px); }
+    .btn-ghost { background: rgba(55, 118, 171, 0.1); color: var(--primary-color); }
+    .btn-ghost:hover { background: rgba(55, 118, 171, 0.2); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+
+    .difficulty { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { padding: 6px 10px; background: rgba(55, 118, 171, 0.08); color: var(--primary-color); border-radius: 999px; font-size: 0.8rem; cursor: pointer; border: 1px solid transparent; }
+    .chip.active { background: var(--primary-color); color: white; }
+
+    .question-card { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow); padding: 24px; }
+    .question-title { font-size: 1.2rem; margin-bottom: 10px; }
+    .question-meta { display: flex; gap: 12px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .options { display: grid; gap: 10px; }
+    .option { padding: 12px 14px; border-radius: 10px; border: 2px solid rgba(55, 118, 171, 0.15); background: rgba(55, 118, 171, 0.05); cursor: pointer; transition: var(--transition); }
+    .option:hover { border-color: var(--primary-color); transform: translateY(-1px); }
+    .option.correct { border-color: var(--success); background: rgba(39, 174, 96, 0.08); }
+    .option.wrong { border-color: var(--danger); background: rgba(231, 76, 60, 0.08); }
+
+    .explanation { margin-top: 14px; background: rgba(243, 156, 18, 0.1); border-left: 4px solid var(--warning); border-radius: 0 12px 12px 0; padding: 12px 14px; display: none; }
+    .explanation.show { display: block; }
+
+    .progress-wrap { margin-top: 16px; }
+    .progress-bar { width: 100%; height: 10px; background: rgba(55, 118, 171, 0.12); border-radius: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); width: 0%; transition: width 0.3s ease; }
+
+    .footer-nav { margin-top: 18px; display: flex; gap: 12px; justify-content: space-between; }
+
+    .result { text-align: center; padding: 24px; border: 2px dashed rgba(55,118,171,0.2); border-radius: 16px; }
+    .hidden { display: none; }
+
+    @media (max-width: 900px) { .game-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="index.html" class="nav-brand"><i class="fab fa-python"></i>Python Learning Hub</a>
+      <div class="nav-links">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="header">
+    <div class="header-content">
+      <h1>List Mastery Game</h1>
+      <p>Crack every list question. Practice with tricky, exam-focused items until you reach 100% mastery. Missed ones come back until you ace them all.</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="game-grid">
+      <!-- Sidebar: Stats & Controls -->
+      <aside class="panel">
+        <h2><i class="fas fa-trophy"></i> Progress</h2>
+        <div class="stats">
+          <div class="stat"><div class="num" id="statScore">0</div><div class="label">Score</div></div>
+          <div class="stat"><div class="num" id="statStreak">0</div><div class="label">Streak</div></div>
+          <div class="stat"><div class="num" id="statCorrect">0</div><div class="label">Correct</div></div>
+          <div class="stat"><div class="num" id="statTotal">0</div><div class="label">Total</div></div>
+        </div>
+
+        <h2 style="margin-top:18px"><i class="fas fa-sliders-h"></i> Mode</h2>
+        <div class="controls">
+          <button class="btn btn-primary" id="btnPractice">Practice Mode</button>
+          <button class="btn btn-ghost" id="btnExam">Exam Mode (20 Q, timed)</button>
+          <button class="btn btn-success" id="btnReset">Reset Progress</button>
+        </div>
+
+        <h2 style="margin-top:18px"><i class="fas fa-signal"></i> Difficulty</h2>
+        <div class="difficulty" id="difficultyChips">
+          <span class="chip active" data-level="all">All</span>
+          <span class="chip" data-level="easy">Easy</span>
+          <span class="chip" data-level="medium">Medium</span>
+          <span class="chip" data-level="hard">Hard</span>
+        </div>
+      </aside>
+
+      <!-- Main Game Area -->
+      <main class="panel">
+        <div class="question-card" id="questionCard">
+          <div class="question-meta">
+            <span id="qCategory">Category: -</span>
+            <span id="qDifficulty">Difficulty: -</span>
+          </div>
+          <div class="question-title" id="qTitle">Click a mode to start the game.</div>
+          <div class="options" id="qOptions"></div>
+          <div class="explanation" id="qExplanation"></div>
+          <div class="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" id="qProgress"></div></div>
+          </div>
+          <div class="footer-nav">
+            <button class="btn btn-ghost" id="btnHint"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div>
+              <button class="btn" id="btnPrev">Previous</button>
+              <button class="btn btn-primary" id="btnNext">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="result hidden" id="resultPanel">
+          <h2>Great Job!</h2>
+          <p id="resultSummary">You scored 0/0.</p>
+          <p>Any misses are automatically re-queued until you get them right. Keep going until you reach 100/100!</p>
+          <div style="margin-top:14px; display:flex; gap:10px; justify-content:center;">
+            <button class="btn btn-primary" id="btnReviewMisses">Review Missed</button>
+            <button class="btn" onclick="location.href='index.html'">Back to Home</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Theme
+    function toggleTheme() {
+      const body = document.body; const icon = document.getElementById('theme-icon');
+      if (body.getAttribute('data-theme') === 'dark') { body.removeAttribute('data-theme'); icon.className = 'fas fa-moon'; localStorage.setItem('theme', 'light'); }
+      else { body.setAttribute('data-theme', 'dark'); icon.className = 'fas fa-sun'; localStorage.setItem('theme', 'dark'); }
+    }
+    (function initTheme(){ const saved = localStorage.getItem('theme'); const icon = document.getElementById('theme-icon'); if (saved === 'dark') { document.body.setAttribute('data-theme','dark'); icon.className='fas fa-sun'; } })();
+
+    // Question Bank - Tricky List Questions (MCQ, Output, T/F)
+    // Coverage: indexing & slicing, methods, comprehension, mutation during iteration, copying/identity, sorting key, nested lists, time complexity, pitfalls, in-place vs new list
+    const QUESTION_BANK = [
+      {
+        id: 'idx1',
+        type: 'mcq',
+        category: 'Indexing & Slicing',
+        difficulty: 'easy',
+        question: "What is the output of ['p','y','t','h','o','n'][1:4]?",
+        options: ["['y','t','h']", "['y','t','h','o']", "['p','y','t','h']", "['t','h','o']"],
+        answer: 0,
+        hint: "Slice is start inclusive, end exclusive.",
+        explanation: "list[start:end] includes indices 1,2,3 → ['y','t','h']."
+      },
+      {
+        id: 'idx2', type: 'mcq', category: 'Indexing & Slicing', difficulty: 'easy',
+        question: "Given a=[1,2,3,4,5], what does a[::-1] return?",
+        options: ["[1,2,3,4,5]","[5,4,3,2,1]","[2,3,4,5]","Error"], answer: 1,
+        hint: "Negative step reverses sequence.",
+        explanation: "a[::-1] returns a reversed copy: [5,4,3,2,1]."
+      },
+      {
+        id: 'idx3', type: 'mcq', category: 'Indexing & Slicing', difficulty: 'medium',
+        question: "a=[1,2,3,4,5]; a[1:4]=[9,9]; What is a?",
+        options: ["[1,9,9,5]","[1,2,3,9,9,5]","[1,9,9,4,5]","[1,2,9,9,4,5]"], answer: 0,
+        hint: "Slice assignment can change length.",
+        explanation: "Positions 1..3 replaced → [1,9,9,5]."
+      },
+      {
+        id: 'meth1', type: 'mcq', category: 'List Methods', difficulty: 'easy',
+        question: "Which method adds all elements from an iterable to a list?",
+        options: ["append()","extend()","insert()","add()"], answer: 1,
+        hint: "append adds one object; extend iterates.",
+        explanation: "extend(iterable) adds each element; append adds the iterable as a single item."
+      },
+      {
+        id: 'meth2', type: 'output', category: 'List Methods', difficulty: 'medium',
+        question: "a=[1,2]; b=a.append([3,4]); print(a,b)",
+        options: ["[1,2,3,4] [1,2,3,4]","[1,2,[3,4]] None","[1,2,[3,4]] [1,2,[3,4]]","Error"], answer: 1,
+        hint: "append returns None.",
+        explanation: "append modifies in place and returns None → a becomes [1,2,[3,4]], b is None."
+      },
+      {
+        id: 'meth3', type: 'mcq', category: 'List Methods', difficulty: 'medium',
+        question: "What does list.insert(i, x) do?",
+        options: ["Replaces item at i","Inserts x at position i","Appends x","Raises IndexError if i>len"], answer: 1,
+        hint: "Insert shifts items to the right.",
+        explanation: "insert places x before current item at index i; no IndexError for i>len (appends)."
+      },
+      {
+        id: 'comp1', type: 'output', category: 'Comprehensions', difficulty: 'easy',
+        question: "[x**2 for x in range(4)]",
+        options: ["[0,1,4,9]","[1,4,9,16]","[0,1,4]","[1,4,9]"], answer: 0,
+        hint: "range(4) yields 0..3.",
+        explanation: "Squares of 0..3 → [0,1,4,9]."
+      },
+      {
+        id: 'comp2', type: 'output', category: 'Comprehensions', difficulty: 'medium',
+        question: "[x for x in [1,2,3,4,5] if x%2==0]",
+        options: ["[1,3,5]","[2,4]","[0,2,4]","[1,2,3,4,5]"], answer: 1,
+        hint: "Keep even numbers.",
+        explanation: "Filter even → [2,4]."
+      },
+      {
+        id: 'pit1', type: 'mcq', category: 'Pitfalls & Mutation', difficulty: 'hard',
+        question: "Why is removing items while iterating over the same list dangerous?",
+        options: ["Time limit exceeded","Memory leak","Index shifting causes skips","Python forbids it"], answer: 2,
+        hint: "The iterator doesn't rewind.",
+        explanation: "Mutating shifts elements left; the iterator advances, skipping elements."
+      },
+      {
+        id: 'pit2', type: 'mcq', category: 'Pitfalls & Mutation', difficulty: 'medium',
+        question: "Safe way to remove items while iterating?",
+        options: ["Iterate over copy","Iterate backwards by index","List comprehension to rebuild","All of the above"], answer: 3,
+        hint: "There are multiple safe patterns.",
+        explanation: "All listed strategies are safe and commonly used."
+      },
+      {
+        id: 'copy1', type: 'mcq', category: 'Copying & Identity', difficulty: 'medium',
+        question: "Which makes a shallow copy of list l?",
+        options: ["l2 = l","l2 = l[:]","l2 = copy.deepcopy(l)","l2 = (l)"], answer: 1,
+        hint: "Slicing or list() or copy().",
+        explanation: "l[:] copies top-level (shallow). deepcopy copies nested too."
+      },
+      {
+        id: 'copy2', type: 'output', category: 'Copying & Identity', difficulty: 'hard',
+        question: "l=[[1],[2]]; s=l[:]; l[0].append(99); print(s)",
+        options: ["[[1],[2]]","[[1,99],[2]]","[[99],[2]]","Error"], answer: 1,
+        hint: "Shallow copy shares inner lists.",
+        explanation: "Both references share nested lists; mutation is visible in s."
+      },
+      {
+        id: 'sort1', type: 'output', category: 'Sorting & Key', difficulty: 'medium',
+        question: "sorted(['pear','apple','fig','banana'], key=len)",
+        options: ["['fig','pear','apple','banana']","['pear','apple','fig','banana']","['banana','apple','pear','fig']","Error"], answer: 0,
+        hint: "Key=len sorts by length.",
+        explanation: "Lengths: 3,4,5,6 → ascending."
+      },
+      {
+        id: 'sort2', type: 'output', category: 'Sorting & Key', difficulty: 'hard',
+        question: "a=[3,1,2]; a.sort(); b=sorted(a, reverse=True); print(a,b)",
+        options: ["[1,2,3] [3,2,1]","[3,2,1] [3,2,1]","[1,2,3] [1,2,3]","[3,1,2] [3,2,1]"], answer: 0,
+        hint: "sort modifies in place; sorted returns new list.",
+        explanation: "a becomes [1,2,3]; b is a new reversed list [3,2,1]."
+      },
+      {
+        id: 'nest1', type: 'mcq', category: 'Nested Lists', difficulty: 'medium',
+        question: "Which creates a 3x3 grid of zeros correctly?",
+        options: ["[[0]*3]*3","[[0 for _ in range(3)] for _ in range(3)]","list([0]*3 for _ in range(3))","Both 2 and 3"], answer: 3,
+        hint: "Avoid shared rows.",
+        explanation: "[[0]*3]*3 shares the same inner list; 2 and 3 create independent rows."
+      },
+      {
+        id: 'time1', type: 'mcq', category: 'Complexity', difficulty: 'medium',
+        question: "Time complexity of list.append(x) amortized?",
+        options: ["O(1)","O(log n)","O(n)","O(n log n)"], answer: 0,
+        hint: "Dynamic array amortization.",
+        explanation: "Append is amortized O(1) in CPython list implementation."
+      },
+      {
+        id: 'time2', type: 'mcq', category: 'Complexity', difficulty: 'hard',
+        question: "Time complexity of list.insert(0, x) for length n?",
+        options: ["O(1)","O(log n)","O(n)","O(n log n)"], answer: 2,
+        hint: "Shifts elements to make room.",
+        explanation: "Insert at front shifts all items → O(n)."
+      },
+      {
+        id: 'pit3', type: 'output', category: 'Pitfalls & Mutation', difficulty: 'hard',
+        question: "l=[1,2,3,4,5]; for x in l: if x%2: l.remove(x); print(l) at end:",
+        options: ["[2,4]","[1,2,3,4,5]","[2,3,4,5]","[2,4,5]"], answer: 3,
+        hint: "Some odds get skipped.",
+        explanation: "Removes 1 then 3 gets skipped, removes 5; result [2,4,5]."
+      },
+      {
+        id: 'count1', type: 'mcq', category: 'Methods & Behavior', difficulty: 'easy',
+        question: "What does [1,2,2,3].count(2) return?",
+        options: ["1","2","3","True"], answer: 1,
+        hint: "Counts occurrences.",
+        explanation: "There are two 2's."
+      },
+      {
+        id: 'id1', type: 'mcq', category: 'Copying & Identity', difficulty: 'medium',
+        question: "l1=[1,2,3]; l2=l1; l1.append(9); What is l2?",
+        options: ["[1,2,3]","[1,2,3,9]","Error","[9]"], answer: 1,
+        hint: "Assignment shares object.",
+        explanation: "l2 references the same list; both show the append."
+      },
+      {
+        id: 'sliceEq', type: 'mcq', category: 'Indexing & Slicing', difficulty: 'medium',
+        question: "Is l1 is l1[:] True or False for lists?",
+        options: ["True","False"], answer: 1,
+        hint: "Slice copy creates a new list.",
+        explanation: "Identity is False; equality is True."
+      }
+    ];
+
+    // Game State
+    const state = {
+      mode: 'practice', // 'practice' | 'exam'
+      difficulty: 'all',
+      index: 0,
+      queue: [],
+      misses: [],
+      score: 0,
+      streak: 0,
+      correct: 0,
+      total: 0,
+      seen: new Set(),
+      examTimer: null,
+      examRemaining: 0 // seconds
+    };
+
+    // UI Elements
+    const els = {
+      qCard: document.getElementById('questionCard'),
+      qTitle: document.getElementById('qTitle'),
+      qOptions: document.getElementById('qOptions'),
+      qExplanation: document.getElementById('qExplanation'),
+      qCategory: document.getElementById('qCategory'),
+      qDifficulty: document.getElementById('qDifficulty'),
+      qProgress: document.getElementById('qProgress'),
+      btnHint: document.getElementById('btnHint'),
+      btnPrev: document.getElementById('btnPrev'),
+      btnNext: document.getElementById('btnNext'),
+      btnPractice: document.getElementById('btnPractice'),
+      btnExam: document.getElementById('btnExam'),
+      btnReset: document.getElementById('btnReset'),
+      chips: document.getElementById('difficultyChips'),
+      resultPanel: document.getElementById('resultPanel'),
+      resultSummary: document.getElementById('resultSummary'),
+      btnReviewMisses: document.getElementById('btnReviewMisses'),
+      statScore: document.getElementById('statScore'),
+      statStreak: document.getElementById('statStreak'),
+      statCorrect: document.getElementById('statCorrect'),
+      statTotal: document.getElementById('statTotal')
+    };
+
+    // Helpers
+    function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+    function byDifficulty(q){ return state.difficulty==='all' ? true : q.difficulty===state.difficulty; }
+    function saveProgress(){ localStorage.setItem('listGameProgress', JSON.stringify({score:state.score, correct:state.correct, total:state.total})); }
+    function loadProgress(){ try{ const d=JSON.parse(localStorage.getItem('listGameProgress')||'{}'); if(d && typeof d==='object'){ state.score=d.score||0; state.correct=d.correct||0; state.total=d.total||0; } }catch(_){} }
+
+    function buildQueue(){
+      const pool = QUESTION_BANK.filter(byDifficulty);
+      if(state.mode==='exam'){
+        const picked = shuffle(pool).slice(0, 20);
+        state.queue = picked;
+      } else {
+        state.queue = shuffle(pool);
+      }
+      state.index = 0;
+      state.misses = [];
+      updateStats();
+      renderQuestion();
+    }
+
+    function renderQuestion(){
+      if(state.index >= state.queue.length){
+        // If practice and there are misses, re-queue them to ensure 100% mastery
+        if(state.mode==='practice' && state.misses.length){
+          state.queue = shuffle(state.misses);
+          state.misses = [];
+          state.index = 0;
+        } else {
+          // Show result
+          els.qCard.classList.add('hidden');
+          els.resultPanel.classList.remove('hidden');
+          els.resultSummary.textContent = `You scored ${state.correct}/${state.total}.`;
+          saveProgress();
+          return;
+        }
+      }
+
+      const q = state.queue[state.index];
+      els.qTitle.textContent = q.question;
+      els.qCategory.textContent = `Category: ${q.category}`;
+      els.qDifficulty.textContent = `Difficulty: ${q.difficulty}`;
+      els.qOptions.innerHTML = '';
+      els.qExplanation.className = 'explanation';
+      els.qExplanation.textContent = '';
+
+      q.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'option';
+        div.textContent = opt;
+        div.addEventListener('click', () => handleAnswer(q, i, div));
+        els.qOptions.appendChild(div);
+      });
+
+      const progress = state.total ? Math.round((state.correct / state.total) * 100) : 0;
+      els.qProgress.style.width = progress + '%';
+    }
+
+    function handleAnswer(q, selectedIndex, optionEl){
+      // Prevent double-answering
+      const already = [...els.qOptions.children].some(c => c.classList.contains('correct') || c.classList.contains('wrong'));
+      if(already) return;
+
+      state.total += 1;
+      if(selectedIndex === q.answer){
+        optionEl.classList.add('correct');
+        state.correct += 1; state.score += 5; state.streak += 1;
+        els.qExplanation.classList.add('show');
+        els.qExplanation.textContent = q.explanation;
+      } else {
+        optionEl.classList.add('wrong');
+        state.streak = 0;
+        // Mark correct one
+        els.qOptions.children[q.answer].classList.add('correct');
+        els.qExplanation.classList.add('show');
+        els.qExplanation.textContent = q.explanation + ' (Hint: ' + q.hint + ')';
+        // Ensure re-try in practice mode
+        if(state.mode==='practice') state.misses.push(q);
+      }
+      updateStats();
+    }
+
+    function nextQuestion(){ state.index += 1; renderQuestion(); }
+    function prevQuestion(){ if(state.index>0){ state.index -= 1; renderQuestion(); } }
+
+    function updateStats(){
+      els.statScore.textContent = state.score;
+      els.statStreak.textContent = state.streak;
+      els.statCorrect.textContent = state.correct;
+      els.statTotal.textContent = state.total;
+      const progress = state.total ? Math.round((state.correct / state.total) * 100) : 0;
+      els.qProgress.style.width = progress + '%';
+      saveProgress();
+    }
+
+    // Mode & Difficulty
+    els.btnPractice.addEventListener('click', () => { state.mode='practice'; buildQueue(); els.resultPanel.classList.add('hidden'); els.qCard.classList.remove('hidden'); });
+    els.btnExam.addEventListener('click', () => { state.mode='exam'; buildQueue(); els.resultPanel.classList.add('hidden'); els.qCard.classList.remove('hidden'); });
+    els.btnReset.addEventListener('click', () => { localStorage.removeItem('listGameProgress'); state.score=0; state.correct=0; state.total=0; state.streak=0; updateStats(); alert('Progress reset!'); });
+    els.chips.addEventListener('click', (e) => { if(e.target.classList.contains('chip')){ [...els.chips.children].forEach(c=>c.classList.remove('active')); e.target.classList.add('active'); state.difficulty = e.target.getAttribute('data-level'); buildQueue(); } });
+
+    // Nav
+    els.btnNext.addEventListener('click', nextQuestion);
+    els.btnPrev.addEventListener('click', prevQuestion);
+    els.btnHint.addEventListener('click', () => { const q = state.queue[state.index]; if(!q) return; els.qExplanation.classList.add('show'); els.qExplanation.textContent = 'Hint: ' + q.hint; });
+    document.getElementById('btnReviewMisses').addEventListener('click', () => { if(state.misses.length){ state.queue = shuffle(state.misses); state.misses=[]; state.index=0; els.resultPanel.classList.add('hidden'); els.qCard.classList.remove('hidden'); renderQuestion(); } else { alert('No missed questions. Keep practicing for 100%!'); } });
+
+    // Load saved progress on open
+    loadProgress(); updateStats();
+
+    // Track visit for overall site progress
+    (function trackVisit(){ let visited = JSON.parse(localStorage.getItem('visitedPages') || '[]'); const page='list-game.html'; if(!visited.includes(page)){ visited.push(page); localStorage.setItem('visitedPages', JSON.stringify(visited)); } })();
+  </script>
+</body>
+</html>
+
+
+
+

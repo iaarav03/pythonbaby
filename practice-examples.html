@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Examples - Python Learning Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --code-bg: #f8f9fa;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --code-bg: #1e1e1e;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-brand i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.1);
+        }
+
+        .theme-toggle {
+            background: rgba(55, 118, 171, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--success-color) 0%, #1e8449 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.8;
+            justify-content: center;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Content */
+        .content {
+            margin-top: 40px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success-color), var(--warning-color));
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--success-color), #1e8449);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* Exercise Cards */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--success-color);
+            transform: translateY(-5px);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .exercise-title {
+            font-size: 1.3rem;
+            color: var(--success-color);
+            margin-bottom: 5px;
+        }
+
+        .difficulty-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-easy {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success-color);
+        }
+
+        .difficulty-medium {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+
+        .difficulty-hard {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+
+        .exercise-description {
+            margin-bottom: 20px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Code Editor */
+        .code-editor {
+            background: var(--code-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            border: 1px solid rgba(55, 118, 171, 0.2);
+        }
+
+        .editor-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .editor-content {
+            position: relative;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 20px;
+            border: none;
+            background: var(--code-bg);
+            color: var(--text-color);
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+        }
+
+        .editor-actions {
+            padding: 15px 20px;
+            background: rgba(55, 118, 171, 0.05);
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .run-btn {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .run-btn:hover {
+            background: #229954;
+        }
+
+        .reset-btn {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #d68910;
+        }
+
+        .hint-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .hint-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* Output Display */
+        .output-display {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 60px;
+            display: none;
+        }
+
+        .output-display.show {
+            display: block;
+        }
+
+        /* Hints */
+        .hint-content {
+            background: rgba(243, 156, 18, 0.1);
+            border-left: 4px solid var(--warning-color);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+
+        .hint-content.show {
+            display: block;
+        }
+
+        .hint-content h4 {
+            color: var(--warning-color);
+            margin-bottom: 10px;
+        }
+
+        /* Progress Tracking */
+        .progress-tracker {
+            background: linear-gradient(135deg, rgba(55, 118, 171, 0.1), rgba(48, 105, 152, 0.1));
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .progress-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--success-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Common Mistakes Section */
+        .mistake-card {
+            background: rgba(231, 76, 60, 0.05);
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .mistake-title {
+            color: var(--danger-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .wrong-code, .right-code {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .wrong-code .code-header {
+            background: var(--danger-color);
+        }
+
+        .right-code .code-header {
+            background: var(--success-color);
+        }
+
+        .code-header {
+            color: white;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .code-content {
+            background: var(--code-bg);
+            padding: 15px;
+            font-family: monospace;
+            font-size: 1rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .exercise-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .code-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">
+                <i class="fab fa-python"></i>
+                Python Learning Hub
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="advanced-topics.html">Previous</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Practice Examples</span>
+                </div>
+                <h1>Practice Examples</h1>
+                <p>Hands-on coding exercises to reinforce your Python skills</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="content">
+            
+            <!-- Progress Tracker -->
+            <div class="progress-tracker">
+                <h2 class="progress-title">Your Practice Progress</h2>
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="completed-exercises">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">6</span>
+                        <span class="stat-label">Total Exercises</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="success-rate">0%</span>
+                        <span class="stat-label">Success Rate</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Exercises -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">💻</div>
+                    Interactive Coding Exercises
+                </h2>
+                
+                <div class="exercise-grid">
+                    <!-- Exercise 1: String Manipulation -->
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div>
+                                <h3 class="exercise-title">String Reversal</h3>
+                                <span class="difficulty-badge difficulty-easy">Easy</span>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            Write a function that takes a string and returns it reversed. Try to implement it without using the built-in reverse method.
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>Exercise 1: String Reversal</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-textarea" id="exercise1-code">def reverse_string(s):
+    # Write your code here
+    # Hint: You can use string slicing or a loop
+    pass
+
+# Test your function
+test_string = "hello world"
+result = reverse_string(test_string)
+print(f"Original: {test_string}")
+print(f"Reversed: {result}")</textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="action-btn run-btn" onclick="runExercise(1)">Run Code</button>
+                                <button class="action-btn reset-btn" onclick="resetExercise(1)">Reset</button>
+                                <button class="action-btn hint-btn" onclick="toggleHint(1)">Show Hint</button>
+                            </div>
+                        </div>
+                        
+                        <div class="output-display" id="exercise1-output"></div>
+                        
+                        <div class="hint-content" id="exercise1-hint">
+                            <h4>💡 Hint</h4>
+                            <p>You can reverse a string using slicing: <code>s[::-1]</code> or by iterating through the string backwards and building a new string.</p>
+                        </div>
+                    </div>
+
+                    <!-- Exercise 2: List Operations -->
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div>
+                                <h3 class="exercise-title">Find All Positions</h3>
+                                <span class="difficulty-badge difficulty-medium">Medium</span>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            Create a function that finds all positions of a substring in a text. Return a list of all starting indices.
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>Exercise 2: Find All Positions</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-textarea" id="exercise2-code">def find_all_positions(text, substring):
+    # Write your code here
+    # Return a list of all starting positions
+    positions = []
+    # Your implementation here
+    return positions
+
+# Test your function
+text = "the quick brown fox jumps over the lazy dog"
+substring = "the"
+result = find_all_positions(text, substring)
+print(f"Text: {text}")
+print(f"Substring: '{substring}'")
+print(f"Positions: {result}")</textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="action-btn run-btn" onclick="runExercise(2)">Run Code</button>
+                                <button class="action-btn reset-btn" onclick="resetExercise(2)">Reset</button>
+                                <button class="action-btn hint-btn" onclick="toggleHint(2)">Show Hint</button>
+                            </div>
+                        </div>
+                        
+                        <div class="output-display" id="exercise2-output"></div>
+                        
+                        <div class="hint-content" id="exercise2-hint">
+                            <h4>💡 Hint</h4>
+                            <p>Use a while loop with the <code>find()</code> method. Start searching from position 0, then from the position after each found occurrence.</p>
+                        </div>
+                    </div>
+
+                    <!-- Exercise 3: List Comprehension -->
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div>
+                                <h3 class="exercise-title">Data Processing</h3>
+                                <span class="difficulty-badge difficulty-medium">Medium</span>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            Given a list of numbers, create a new list containing only the squares of even numbers. Use list comprehension.
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>Exercise 3: Data Processing</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-textarea" id="exercise3-code">def process_numbers(numbers):
+    # Use list comprehension to get squares of even numbers
+    # Your code here
+    result = []  # Replace this with list comprehension
+    return result
+
+# Test your function
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+result = process_numbers(numbers)
+print(f"Original numbers: {numbers}")
+print(f"Squares of even numbers: {result}")</textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="action-btn run-btn" onclick="runExercise(3)">Run Code</button>
+                                <button class="action-btn reset-btn" onclick="resetExercise(3)">Reset</button>
+                                <button class="action-btn hint-btn" onclick="toggleHint(3)">Show Hint</button>
+                            </div>
+                        </div>
+                        
+                        <div class="output-display" id="exercise3-output"></div>
+                        
+                        <div class="hint-content" id="exercise3-hint">
+                            <h4>💡 Hint</h4>
+                            <p>List comprehension syntax: <code>[expression for item in iterable if condition]</code><br>
+                            You need: <code>[x**2 for x in numbers if x % 2 == 0]</code></p>
+                        </div>
+                    </div>
+
+                    <!-- Exercise 4: Dictionary Operations -->
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div>
+                                <h3 class="exercise-title">Word Counter</h3>
+                                <span class="difficulty-badge difficulty-medium">Medium</span>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            Create a function that counts the frequency of each word in a text and returns a dictionary.
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>Exercise 4: Word Counter</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-textarea" id="exercise4-code">def count_words(text):
+    # Convert to lowercase and split into words
+    # Count frequency of each word
+    word_count = {}
+    # Your implementation here
+    return word_count
+
+# Test your function
+text = "the quick brown fox jumps over the lazy dog the fox"
+result = count_words(text)
+print(f"Text: {text}")
+print(f"Word count: {result}")
+
+# Find the most common word
+if result:
+    most_common = max(result, key=result.get)
+    print(f"Most common word: '{most_common}' ({result[most_common]} times)")</textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="action-btn run-btn" onclick="runExercise(4)">Run Code</button>
+                                <button class="action-btn reset-btn" onclick="resetExercise(4)">Reset</button>
+                                <button class="action-btn hint-btn" onclick="toggleHint(4)">Show Hint</button>
+                            </div>
+                        </div>
+                        
+                        <div class="output-display" id="exercise4-output"></div>
+                        
+                        <div class="hint-content" id="exercise4-hint">
+                            <h4>💡 Hint</h4>
+                            <p>1. Use <code>text.lower().split()</code> to get words<br>
+                            2. Loop through words and use <code>word_count.get(word, 0) + 1</code> to count<br>
+                            3. Or use <code>word_count[word] = word_count.get(word, 0) + 1</code></p>
+                        </div>
+                    </div>
+
+                    <!-- Exercise 5: Advanced String Processing -->
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div>
+                                <h3 class="exercise-title">Email Validator</h3>
+                                <span class="difficulty-badge difficulty-hard">Hard</span>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            Write a function that validates email addresses. Check for @ symbol, domain, and basic format.
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>Exercise 5: Email Validator</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-textarea" id="exercise5-code">def validate_email(email):
+    # Check if email is valid
+    # Requirements:
+    # - Must have exactly one @ symbol
+    # - Must have username before @
+    # - Must have domain after @ with at least one dot
+    # - No spaces allowed
+    
+    # Your implementation here
+    return False  # Replace with your logic
+
+# Test your function
+test_emails = [
+    "user@example.com",
+    "invalid.email",
+    "user@",
+    "@example.com",
+    "user name@example.com",
+    "user@example",
+    "user@example.co.uk"
+]
+
+for email in test_emails:
+    result = validate_email(email)
+    print(f"{email:<25} -> {'Valid' if result else 'Invalid'}")</textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="action-btn run-btn" onclick="runExercise(5)">Run Code</button>
+                                <button class="action-btn reset-btn" onclick="resetExercise(5)">Reset</button>
+                                <button class="action-btn hint-btn" onclick="toggleHint(5)">Show Hint</button>
+                            </div>
+                        </div>
+                        
+                        <div class="output-display" id="exercise5-output"></div>
+                        
+                        <div class="hint-content" id="exercise5-hint">
+                            <h4>💡 Hint</h4>
+                            <p>1. Check for exactly one @ using <code>email.count('@') == 1</code><br>
+                            2. Split by @ and validate username and domain parts<br>
+                            3. Check for spaces with <code>' ' not in email</code><br>
+                            4. Ensure domain has at least one dot</p>
+                        </div>
+                    </div>
+
+                    <!-- Exercise 6: Algorithm Challenge -->
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <div>
+                                <h3 class="exercise-title">Fibonacci Sequence</h3>
+                                <span class="difficulty-badge difficulty-hard">Hard</span>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            Generate the first n numbers in the Fibonacci sequence. Try both recursive and iterative approaches.
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>Exercise 6: Fibonacci Sequence</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-textarea" id="exercise6-code">def fibonacci_iterative(n):
+    # Iterative approach - more efficient
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    # Your implementation here
+    fib_sequence = [0, 1]
+    # Complete the sequence
+    return fib_sequence
+
+def fibonacci_recursive(n):
+    # Recursive approach - less efficient but elegant
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        # Your recursive implementation here
+        return 0  # Replace this
+
+# Test both approaches
+n = 10
+print(f"First {n} Fibonacci numbers (iterative): {fibonacci_iterative(n)}")
+print(f"10th Fibonacci number (recursive): {fibonacci_recursive(n)}")</textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="action-btn run-btn" onclick="runExercise(6)">Run Code</button>
+                                <button class="action-btn reset-btn" onclick="resetExercise(6)">Reset</button>
+                                <button class="action-btn hint-btn" onclick="toggleHint(6)">Show Hint</button>
+                            </div>
+                        </div>
+                        
+                        <div class="output-display" id="exercise6-output"></div>
+                        
+                        <div class="hint-content" id="exercise6-hint">
+                            <h4>💡 Hint</h4>
+                            <p><strong>Iterative:</strong> Use a loop to build the sequence: each number is the sum of the two previous numbers.<br>
+                            <strong>Recursive:</strong> <code>fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)</code></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Mistakes Section -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">⚠️</div>
+                    Common Mistakes & Solutions
+                </h2>
+
+                <div class="mistake-card">
+                    <h3 class="mistake-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Modifying List While Iterating
+                    </h3>
+                    <p>One of the most common mistakes is modifying a list while iterating over it, which can cause elements to be skipped.</p>
+                    
+                    <div class="code-comparison">
+                        <div class="wrong-code">
+                            <div class="code-header">❌ Wrong Way</div>
+                            <div class="code-content">
+for item in my_list:
+    if condition:
+        my_list.remove(item)  # Dangerous!
+                            </div>
+                        </div>
+                        <div class="right-code">
+                            <div class="code-header">✅ Correct Way</div>
+                            <div class="code-content">
+# Option 1: Iterate over copy
+for item in my_list[:]:
+    if condition:
+        my_list.remove(item)
+
+# Option 2: List comprehension
+my_list = [item for item in my_list if not condition]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mistake-card">
+                    <h3 class="mistake-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Mutable Default Arguments
+                    </h3>
+                    <p>Using mutable objects as default arguments can lead to unexpected behavior.</p>
+                    
+                    <div class="code-comparison">
+                        <div class="wrong-code">
+                            <div class="code-header">❌ Wrong Way</div>
+                            <div class="code-content">
+def append_to_list(item, target_list=[]):
+    target_list.append(item)
+    return target_list
+                            </div>
+                        </div>
+                        <div class="right-code">
+                            <div class="code-header">✅ Correct Way</div>
+                            <div class="code-content">
+def append_to_list(item, target_list=None):
+    if target_list is None:
+        target_list = []
+    target_list.append(item)
+    return target_list
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Exercise solutions and initial code
+        const exercises = {
+            1: {
+                initial: `def reverse_string(s):
+    # Write your code here
+    # Hint: You can use string slicing or a loop
+    pass
+
+# Test your function
+test_string = "hello world"
+result = reverse_string(test_string)
+print(f"Original: {test_string}")
+print(f"Reversed: {result}")`,
+                solution: `def reverse_string(s):
+    return s[::-1]
+
+# Test your function
+test_string = "hello world"
+result = reverse_string(test_string)
+print(f"Original: {test_string}")
+print(f"Reversed: {result}")`,
+                expectedOutput: `Original: hello world
+Reversed: dlrow olleh`
+            },
+            2: {
+                initial: `def find_all_positions(text, substring):
+    # Write your code here
+    # Return a list of all starting positions
+    positions = []
+    # Your implementation here
+    return positions
+
+# Test your function
+text = "the quick brown fox jumps over the lazy dog"
+substring = "the"
+result = find_all_positions(text, substring)
+print(f"Text: {text}")
+print(f"Substring: '{substring}'")
+print(f"Positions: {result}")`,
+                solution: `def find_all_positions(text, substring):
+    positions = []
+    start = 0
+    while True:
+        pos = text.find(substring, start)
+        if pos == -1:
+            break
+        positions.append(pos)
+        start = pos + 1
+    return positions
+
+# Test your function
+text = "the quick brown fox jumps over the lazy dog"
+substring = "the"
+result = find_all_positions(text, substring)
+print(f"Text: {text}")
+print(f"Substring: '{substring}'")
+print(f"Positions: {result}")`,
+                expectedOutput: `Text: the quick brown fox jumps over the lazy dog
+Substring: 'the'
+Positions: [0, 31]`
+            },
+            3: {
+                initial: `def process_numbers(numbers):
+    # Use list comprehension to get squares of even numbers
+    # Your code here
+    result = []  # Replace this with list comprehension
+    return result
+
+# Test your function
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+result = process_numbers(numbers)
+print(f"Original numbers: {numbers}")
+print(f"Squares of even numbers: {result}")`,
+                solution: `def process_numbers(numbers):
+    return [x**2 for x in numbers if x % 2 == 0]
+
+# Test your function
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+result = process_numbers(numbers)
+print(f"Original numbers: {numbers}")
+print(f"Squares of even numbers: {result}")`,
+                expectedOutput: `Original numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+Squares of even numbers: [4, 16, 36, 64, 100]`
+            },
+            4: {
+                initial: `def count_words(text):
+    # Convert to lowercase and split into words
+    # Count frequency of each word
+    word_count = {}
+    # Your implementation here
+    return word_count
+
+# Test your function
+text = "the quick brown fox jumps over the lazy dog the fox"
+result = count_words(text)
+print(f"Text: {text}")
+print(f"Word count: {result}")
+
+# Find the most common word
+if result:
+    most_common = max(result, key=result.get)
+    print(f"Most common word: '{most_common}' ({result[most_common]} times)")`,
+                solution: `def count_words(text):
+    word_count = {}
+    words = text.lower().split()
+    for word in words:
+        word_count[word] = word_count.get(word, 0) + 1
+    return word_count
+
+# Test your function
+text = "the quick brown fox jumps over the lazy dog the fox"
+result = count_words(text)
+print(f"Text: {text}")
+print(f"Word count: {result}")
+
+# Find the most common word
+if result:
+    most_common = max(result, key=result.get)
+    print(f"Most common word: '{most_common}' ({result[most_common]} times)")`,
+                expectedOutput: `Text: the quick brown fox jumps over the lazy dog the fox
+Word count: {'the': 2, 'quick': 1, 'brown': 1, 'fox': 2, 'jumps': 1, 'over': 1, 'lazy': 1, 'dog': 1}
+Most common word: 'the' (2 times)`
+            },
+            5: {
+                initial: `def validate_email(email):
+    # Check if email is valid
+    # Requirements:
+    # - Must have exactly one @ symbol
+    # - Must have username before @
+    # - Must have domain after @ with at least one dot
+    # - No spaces allowed
+    
+    # Your implementation here
+    return False  # Replace with your logic
+
+# Test your function
+test_emails = [
+    "user@example.com",
+    "invalid.email",
+    "user@",
+    "@example.com",
+    "user name@example.com",
+    "user@example",
+    "user@example.co.uk"
+]
+
+for email in test_emails:
+    result = validate_email(email)
+    print(f"{email:<25} -> {'Valid' if result else 'Invalid'}")`,
+                solution: `def validate_email(email):
+    # Check for spaces
+    if ' ' in email:
+        return False
+    
+    # Check for exactly one @
+    if email.count('@') != 1:
+        return False
+    
+    # Split by @
+    parts = email.split('@')
+    username, domain = parts[0], parts[1]
+    
+    # Check username and domain are not empty
+    if not username or not domain:
+        return False
+    
+    # Check domain has at least one dot
+    if '.' not in domain:
+        return False
+    
+    return True
+
+# Test your function
+test_emails = [
+    "user@example.com",
+    "invalid.email",
+    "user@",
+    "@example.com",
+    "user name@example.com",
+    "user@example",
+    "user@example.co.uk"
+]
+
+for email in test_emails:
+    result = validate_email(email)
+    print(f"{email:<25} -> {'Valid' if result else 'Invalid'}")`,
+                expectedOutput: `user@example.com          -> Valid
+invalid.email             -> Invalid
+user@                     -> Invalid
+@example.com              -> Invalid
+user name@example.com     -> Invalid
+user@example              -> Invalid
+user@example.co.uk        -> Valid`
+            },
+            6: {
+                initial: `def fibonacci_iterative(n):
+    # Iterative approach - more efficient
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    # Your implementation here
+    fib_sequence = [0, 1]
+    # Complete the sequence
+    return fib_sequence
+
+def fibonacci_recursive(n):
+    # Recursive approach - less efficient but elegant
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        # Your recursive implementation here
+        return 0  # Replace this
+
+# Test both approaches
+n = 10
+print(f"First {n} Fibonacci numbers (iterative): {fibonacci_iterative(n)}")
+print(f"10th Fibonacci number (recursive): {fibonacci_recursive(n)}")`,
+                solution: `def fibonacci_iterative(n):
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    fib_sequence = [0, 1]
+    for i in range(2, n):
+        fib_sequence.append(fib_sequence[i-1] + fib_sequence[i-2])
+    return fib_sequence
+
+def fibonacci_recursive(n):
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci_recursive(n-1) + fibonacci_recursive(n-2)
+
+# Test both approaches
+n = 10
+print(f"First {n} Fibonacci numbers (iterative): {fibonacci_iterative(n)}")
+print(f"10th Fibonacci number (recursive): {fibonacci_recursive(n)}")`,
+                expectedOutput: `First 10 Fibonacci numbers (iterative): [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+10th Fibonacci number (recursive): 55`
+            }
+        };
+
+        let completedExercises = JSON.parse(localStorage.getItem('completedExercises') || '[]');
+
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Run exercise (simulated)
+        function runExercise(exerciseNum) {
+            const code = document.getElementById(`exercise${exerciseNum}-code`).value;
+            const outputElement = document.getElementById(`exercise${exerciseNum}-output`);
+            
+            // Simple check if the exercise looks complete
+            const exercise = exercises[exerciseNum];
+            const isComplete = checkExerciseCompletion(exerciseNum, code);
+            
+            if (isComplete) {
+                outputElement.textContent = exercise.expectedOutput;
+                outputElement.className = 'output-display show';
+                
+                // Mark as completed
+                if (!completedExercises.includes(exerciseNum)) {
+                    completedExercises.push(exerciseNum);
+                    localStorage.setItem('completedExercises', JSON.stringify(completedExercises));
+                    updateProgress();
+                }
+            } else {
+                outputElement.textContent = 'Code incomplete or incorrect. Please check your implementation.';
+                outputElement.className = 'output-display show';
+            }
+        }
+
+        // Check if exercise is complete (simplified)
+        function checkExerciseCompletion(exerciseNum, code) {
+            switch (exerciseNum) {
+                case 1:
+                    return code.includes('[::-1]') || (code.includes('for') && code.includes('reverse'));
+                case 2:
+                    return code.includes('find(') && code.includes('while') && code.includes('append');
+                case 3:
+                    return code.includes('[') && code.includes('for') && code.includes('if') && code.includes('%');
+                case 4:
+                    return code.includes('split()') && code.includes('get(') && code.includes('lower()');
+                case 5:
+                    return code.includes("count('@')") && code.includes('split(') && code.includes("'.'");
+                case 6:
+                    return code.includes('append(') && (code.includes('return fibonacci_recursive') || code.includes('fibonacci_recursive(n-1)'));
+                default:
+                    return false;
+            }
+        }
+
+        // Reset exercise
+        function resetExercise(exerciseNum) {
+            document.getElementById(`exercise${exerciseNum}-code`).value = exercises[exerciseNum].initial;
+            document.getElementById(`exercise${exerciseNum}-output`).className = 'output-display';
+            document.getElementById(`exercise${exerciseNum}-hint`).className = 'hint-content';
+        }
+
+        // Toggle hint
+        function toggleHint(exerciseNum) {
+            const hintElement = document.getElementById(`exercise${exerciseNum}-hint`);
+            hintElement.classList.toggle('show');
+        }
+
+        // Update progress
+        function updateProgress() {
+            const completedCount = completedExercises.length;
+            const totalExercises = 6;
+            const successRate = Math.round((completedCount / totalExercises) * 100);
+            
+            document.getElementById('completed-exercises').textContent = completedCount;
+            document.getElementById('success-rate').textContent = successRate + '%';
+        }
+
+        // Track page visit for progress
+        function trackVisit() {
+            let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            const currentPage = 'practice-examples.html';
+            
+            if (!visitedPages.includes(currentPage)) {
+                visitedPages.push(currentPage);
+                localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            trackVisit();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

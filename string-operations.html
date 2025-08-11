@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Operations - Python Learning Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --code-bg: #f8f9fa;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --code-bg: #1e1e1e;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-brand i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.1);
+        }
+
+        .theme-toggle {
+            background: rgba(55, 118, 171, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.8;
+            justify-content: center;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Content */
+        .content {
+            margin-top: 40px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin: 30px 0;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(55, 118, 171, 0.1);
+        }
+
+        /* Code Blocks */
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .code-header {
+            background: #e74c3c;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .code-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .code-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .code-content {
+            background: var(--code-bg);
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 1rem;
+            line-height: 1.7;
+            white-space: pre-wrap; /* preserve formatting and wrap long lines */
+            word-break: break-word;
+            border-left: 4px solid #e74c3c;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .code-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        /* Interactive Examples */
+        .interactive-example {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1));
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .example-title {
+            font-size: 1.3rem;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* String Playground */
+        .string-playground {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--shadow);
+            border: 2px solid #e74c3c;
+        }
+
+        .playground-title {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+
+        .playground-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .run-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .run-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .playground-result {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            min-height: 60px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        /* Tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(231, 76, 60, 0.1);
+        }
+
+        .comparison-table th {
+            background: #e74c3c;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(231, 76, 60, 0.05);
+        }
+
+        /* Key Points */
+        .key-points {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .key-points h4 {
+            color: #F57C00;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-points ul {
+            margin-left: 20px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+        }
+
+        /* Navigation between topics */
+        .topic-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            gap: 20px;
+        }
+
+        .nav-card {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            border-color: #e74c3c;
+        }
+
+        .nav-card.prev {
+            text-align: left;
+        }
+
+        .nav-card.next {
+            text-align: right;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+
+        .nav-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .topic-navigation {
+                flex-direction: column;
+            }
+
+            .playground-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">
+                <i class="fab fa-python"></i>
+                Python Learning Hub
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="basic-concepts.html">Previous</a>
+                <a href="data-structures.html">Next Topic</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>String Operations</span>
+                </div>
+                <h1>String Operations</h1>
+                <p>Master text processing and string manipulation in Python</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="content">
+            
+            <!-- String Slicing -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">✂️</div>
+                    String Slicing & Indexing
+                </h2>
+                
+                <p>String slicing is one of Python's most powerful features for text manipulation. Understanding indexing and slicing syntax is essential for effective string processing.</p>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Slicing Syntax</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>String Slicing Syntax</span>
+                        </div>
+                        <div class="code-content">
+string[start:end:step]
+# start: beginning index (inclusive)
+# end: ending index (exclusive)
+# step: increment between characters
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        String Slicing Examples
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - String Slicing</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('slicing')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+text = "Hello World"
+print(f'Original string: "{text}"')
+
+# Basic slicing
+print(f'text[0:5]: "{text[0:5]}"')     # "Hello" (characters 0-4)
+print(f'text[6:11]: "{text[6:11]}"')   # "World" (characters 6-10)
+print(f'text[6:]: "{text[6:]}"')       # "World" (from index 6 to end)
+print(f'text[:5]: "{text[:5]}"')       # "Hello" (from start to index 4)
+
+# Negative indexing
+print(f'text[-5:]: "{text[-5:]}"')     # "World" (last 5 characters)
+print(f'text[:-6]: "{text[:-6]}"')     # "Hello" (all except last 6)
+print(f'text[-5:-1]: "{text[-5:-1]}"') # "Worl" (from -5 to -2)
+
+# Step parameter
+print(f'text[::2]: "{text[::2]}"')     # "HloWrd" (every 2nd character)
+print(f'text[1::2]: "{text[1::2]}"')   # "el ol" (every 2nd char from index 1)
+print(f'text[::-1]: "{text[::-1]}"')   # "dlroW olleH" (reverse string)
+                        </div>
+                        <div class="code-output" id="slicing-output"></div>
+                    </div>
+                </div>
+
+                <!-- Interactive String Playground -->
+                <div class="string-playground">
+                    <h3 class="playground-title">
+                        <i class="fas fa-tools"></i>
+                        Interactive String Slicer
+                    </h3>
+                    <div class="playground-controls">
+                        <div class="input-group">
+                            <label for="string-input">Enter your string:</label>
+                            <input type="text" id="string-input" value="Hello World" placeholder="Type your string here...">
+                        </div>
+                        <div class="input-group">
+                            <label for="start-input">Start index:</label>
+                            <input type="number" id="start-input" value="0" placeholder="Start">
+                        </div>
+                        <div class="input-group">
+                            <label for="end-input">End index:</label>
+                            <input type="number" id="end-input" value="5" placeholder="End">
+                        </div>
+                        <div class="input-group">
+                            <label for="step-input">Step:</label>
+                            <input type="number" id="step-input" value="1" placeholder="Step">
+                        </div>
+                    </div>
+                    <button class="run-btn" onclick="sliceString()">Slice String</button>
+                    <div class="playground-result" id="slice-result">
+                        Result will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- String Methods -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">🔍</div>
+                    String Methods: find() vs index()
+                </h2>
+                
+                <p>Understanding when to use find() versus index() is crucial for robust string processing and error handling.</p>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Method Comparison</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>find()</th>
+                                <th>index()</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Return when found</td>
+                                <td>Index position</td>
+                                <td>Index position</td>
+                            </tr>
+                            <tr>
+                                <td>Return when not found</td>
+                                <td>-1</td>
+                                <td>ValueError exception</td>
+                            </tr>
+                            <tr>
+                                <td>Error handling</td>
+                                <td>Check for -1</td>
+                                <td>Try-except block</td>
+                            </tr>
+                            <tr>
+                                <td>Use case</td>
+                                <td>Conditional logic</td>
+                                <td>When substring must exist</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        find() vs index() Examples
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - String Search Methods</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('search')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+text = "Hello world! This is a wonderful world of programming!"
+print(f'Sample text: "{text}"')
+
+# find() method - returns -1 if not found
+pos1 = text.find('world')
+pos2 = text.find('xyz')  # not found
+print(f"text.find('world'): {pos1}")  # Returns 6
+print(f"text.find('xyz'): {pos2}")    # Returns -1 (not found)
+
+# index() method - raises ValueError if not found
+pos3 = text.index('world')
+print(f"text.index('world'): {pos3}")  # Returns 6
+
+try:
+    pos4 = text.index('xyz')  # This will raise an exception
+except ValueError as e:
+    print(f"text.index('xyz'): ValueError - {e}")
+
+# Finding multiple occurrences
+first_world = text.find('world')
+second_world = text.find('world', first_world + 1)
+print(f"First 'world' at: {first_world}")
+print(f"Second 'world' at: {second_world}")
+
+# Practical usage
+if text.find('python') != -1:
+    print("Found 'python' in text")
+else:
+    print("'python' not found in text")
+                        </div>
+                        <div class="code-output" id="search-output"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced String Operations -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">⚡</div>
+                    Advanced String Operations
+                </h2>
+                
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        Practical String Processing
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - Advanced String Processing</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('advanced')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# Email parsing
+email = "user@domain.com"
+at_pos = email.find('@')
+if at_pos > 0:
+    username = email[:at_pos]
+    domain = email[at_pos + 1:]
+    print(f"Email: {email}")
+    print(f"Username: {username}")
+    print(f"Domain: {domain}")
+
+# URL parsing
+url = "https://www.example.com/path/to/page"
+protocol_end = url.find('://')
+if protocol_end != -1:
+    protocol = url[:protocol_end]
+    rest = url[protocol_end + 3:]
+    domain_end = rest.find('/')
+    if domain_end != -1:
+        domain = rest[:domain_end]
+        path = rest[domain_end:]
+    else:
+        domain = rest
+        path = "/"
+    
+    print(f"\nURL: {url}")
+    print(f"Protocol: {protocol}")
+    print(f"Domain: {domain}")
+    print(f"Path: {path}")
+
+# Finding all occurrences
+def find_all_occurrences(text, substring):
+    positions = []
+    start = 0
+    while True:
+        pos = text.find(substring, start)
+        if pos == -1:
+            break
+        positions.append(pos)
+        start = pos + 1
+    return positions
+
+text = "the quick brown fox jumps over the lazy dog"
+all_the = find_all_occurrences(text, 'the')
+print(f"\nAll occurrences of 'the': {all_the}")
+
+# Case insensitive search
+print(f"Case sensitive: {text.find('THE')}")  # -1
+print(f"Case insensitive: {text.lower().find('the')}")  # 0
+                        </div>
+                        <div class="code-output" id="advanced-output"></div>
+                    </div>
+                </div>
+
+                <!-- String Method Playground -->
+                <div class="string-playground">
+                    <h3 class="playground-title">
+                        <i class="fas fa-search"></i>
+                        String Search Playground
+                    </h3>
+                    <div class="playground-controls">
+                        <div class="input-group">
+                            <label for="search-text">Text to search in:</label>
+                            <input type="text" id="search-text" value="Hello world! This is a wonderful world." placeholder="Enter text to search...">
+                        </div>
+                        <div class="input-group">
+                            <label for="search-term">Search for:</label>
+                            <input type="text" id="search-term" value="world" placeholder="Enter search term...">
+                        </div>
+                        <div class="input-group">
+                            <label for="search-method">Method:</label>
+                            <select id="search-method">
+                                <option value="find">find()</option>
+                                <option value="index">index()</option>
+                                <option value="count">count()</option>
+                                <option value="rfind">rfind()</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="case-sensitive">Case sensitive:</label>
+                            <select id="case-sensitive">
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="run-btn" onclick="searchString()">Search</button>
+                    <div class="playground-result" id="search-playground-result">
+                        Search results will appear here...
+                    </div>
+                </div>
+            </section>
+
+            <!-- String Formatting -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">📝</div>
+                    String Formatting & Manipulation
+                </h2>
+                
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        String Formatting Examples
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - String Formatting</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('formatting')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# String methods quick reference
+text = "  Hello World  "
+print(f"Original: '{text}'")
+print(f"strip(): '{text.strip()}'")
+print(f"upper(): '{text.upper()}'")
+print(f"lower(): '{text.lower()}'")
+print(f"title(): '{text.title()}'")
+print(f"replace('World', 'Python'): '{text.replace('World', 'Python')}'")
+
+# String splitting and joining
+sentence = "Python is awesome and powerful"
+words = sentence.split()
+print(f"\nOriginal: {sentence}")
+print(f"Split into words: {words}")
+print(f"Join with '-': {'-'.join(words)}")
+
+# String validation methods
+test_strings = ["hello123", "HELLO", "hello", "123", "Hello World"]
+for s in test_strings:
+    print(f"'{s}': isalnum={s.isalnum()}, isalpha={s.isalpha()}, "
+          f"isdigit={s.isdigit()}, isupper={s.isupper()}, islower={s.islower()}")
+
+# Advanced formatting
+name = "Alice"
+age = 30
+score = 95.5
+print(f"\nF-string: Hello, {name}! You are {age} years old with a score of {score:.1f}")
+print("Format method: Hello, {}! You are {} years old".format(name, age))
+print("Old style: Hello, %s! You are %d years old" % (name, age))
+                        </div>
+                        <div class="code-output" id="formatting-output"></div>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4><i class="fas fa-lightbulb"></i> String Processing Best Practices</h4>
+                    <ul>
+                        <li>Use f-strings for modern, readable string formatting</li>
+                        <li>Choose find() for conditional logic, index() when substring must exist</li>
+                        <li>Remember that strings are immutable - methods return new strings</li>
+                        <li>Use appropriate string methods instead of manual loops for better performance</li>
+                        <li>Consider case sensitivity in your string comparisons</li>
+                        <li>Use strip() to remove unwanted whitespace from user input</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Navigation -->
+        <div class="topic-navigation">
+            <a href="basic-concepts.html" class="nav-card prev">
+                <div class="nav-label">← Previous</div>
+                <div class="nav-title">Basic Concepts</div>
+            </a>
+            <a href="data-structures.html" class="nav-card next">
+                <div class="nav-label">Next →</div>
+                <div class="nav-title">Data Structures</div>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeContent = button.closest('.code-container').querySelector('.code-content').textContent;
+            navigator.clipboard.writeText(codeContent).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Simulated code execution
+        function runExample(exampleType) {
+            const outputs = {
+                slicing: `Original string: "Hello World"
+text[0:5]: "Hello"
+text[6:11]: "World"
+text[6:]: "World"
+text[:5]: "Hello"
+text[-5:]: "World"
+text[:-6]: "Hello"
+text[-5:-1]: "Worl"
+text[::2]: "HloWrd"
+text[1::2]: "el ol"
+text[::-1]: "dlroW olleH"`,
+                
+                search: `Sample text: "Hello world! This is a wonderful world of programming!"
+text.find('world'): 6
+text.find('xyz'): -1
+text.index('world'): 6
+text.index('xyz'): ValueError - substring not found
+First 'world' at: 6
+Second 'world' at: 35
+'python' not found in text`,
+                
+                advanced: `Email: user@domain.com
+Username: user
+Domain: domain.com
+
+URL: https://www.example.com/path/to/page
+Protocol: https
+Domain: www.example.com
+Path: /path/to/page
+
+All occurrences of 'the': [0, 31]
+Case sensitive: -1
+Case insensitive: 0`,
+                
+                formatting: `Original: '  Hello World  '
+strip(): 'Hello World'
+upper(): '  HELLO WORLD  '
+lower(): '  hello world  '
+title(): '  Hello World  '
+replace('World', 'Python'): '  Hello Python  '
+
+Original: Python is awesome and powerful
+Split into words: ['Python', 'is', 'awesome', 'and', 'powerful']
+Join with '-': Python-is-awesome-and-powerful
+
+'hello123': isalnum=True, isalpha=False, isdigit=False, isupper=False, islower=True
+'HELLO': isalnum=True, isalpha=True, isdigit=False, isupper=True, islower=False
+'hello': isalnum=True, isalpha=True, isdigit=False, isupper=False, islower=True
+'123': isalnum=True, isalpha=False, isdigit=True, isupper=False, islower=False
+'Hello World': isalnum=False, isalpha=False, isdigit=False, isupper=False, islower=False
+
+F-string: Hello, Alice! You are 30 years old with a score of 95.5
+Format method: Hello, Alice! You are 30 years old
+Old style: Hello, Alice! You are 30 years old`
+            };
+            
+            const outputElement = document.getElementById(exampleType + '-output');
+            outputElement.textContent = outputs[exampleType];
+            outputElement.style.display = 'block';
+        }
+
+        // Interactive string slicer
+        function sliceString() {
+            const string = document.getElementById('string-input').value;
+            const start = parseInt(document.getElementById('start-input').value) || 0;
+            const end = parseInt(document.getElementById('end-input').value) || string.length;
+            const step = parseInt(document.getElementById('step-input').value) || 1;
+            
+            try {
+                let result;
+                if (step === 1) {
+                    result = string.slice(start, end);
+                } else {
+                    // Simulate Python slicing with step
+                    let sliced = '';
+                    const actualStart = start < 0 ? string.length + start : start;
+                    const actualEnd = end < 0 ? string.length + end : end;
+                    
+                    if (step > 0) {
+                        for (let i = actualStart; i < actualEnd && i < string.length; i += step) {
+                            if (i >= 0) sliced += string[i];
+                        }
+                    } else {
+                        for (let i = actualStart; i > actualEnd && i >= 0; i += step) {
+                            if (i < string.length) sliced += string[i];
+                        }
+                    }
+                    result = sliced;
+                }
+                
+                document.getElementById('slice-result').innerHTML = `
+                    <strong>Input:</strong> "${string}"<br>
+                    <strong>Slice [${start}:${end}:${step}]:</strong> "${result}"<br>
+                    <strong>Length:</strong> ${result.length}
+                `;
+            } catch (error) {
+                document.getElementById('slice-result').innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        // Interactive string search
+        function searchString() {
+            const text = document.getElementById('search-text').value;
+            const term = document.getElementById('search-term').value;
+            const method = document.getElementById('search-method').value;
+            const caseSensitive = document.getElementById('case-sensitive').value === 'true';
+            
+            const searchText = caseSensitive ? text : text.toLowerCase();
+            const searchTerm = caseSensitive ? term : term.toLowerCase();
+            
+            let result;
+            try {
+                switch (method) {
+                    case 'find':
+                        result = searchText.indexOf(searchTerm);
+                        result = result === -1 ? -1 : result;
+                        break;
+                    case 'index':
+                        result = searchText.indexOf(searchTerm);
+                        if (result === -1) {
+                            result = 'ValueError: substring not found';
+                        }
+                        break;
+                    case 'count':
+                        result = (searchText.match(new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+                        break;
+                    case 'rfind':
+                        result = searchText.lastIndexOf(searchTerm);
+                        result = result === -1 ? -1 : result;
+                        break;
+                }
+                
+                document.getElementById('search-playground-result').innerHTML = `
+                    <strong>Text:</strong> "${text}"<br>
+                    <strong>Search term:</strong> "${term}"<br>
+                    <strong>Method:</strong> ${method}()<br>
+                    <strong>Case sensitive:</strong> ${caseSensitive}<br>
+                    <strong>Result:</strong> ${result}
+                `;
+            } catch (error) {
+                document.getElementById('search-playground-result').innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        // Track page visit for progress
+        function trackVisit() {
+            let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            const currentPage = 'string-operations.html';
+            
+            if (!visitedPages.includes(currentPage)) {
+                visitedPages.push(currentPage);
+                localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            trackVisit();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structures - Python Learning Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --code-bg: #f8f9fa;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --code-bg: #1e1e1e;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* Navigation */
+        .nav { background: var(--card-bg); padding: 20px 0; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); }
+        .nav-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; text-decoration: none; color: var(--primary-color); font-size: 1.5rem; font-weight: bold; }
+        .nav-brand i { margin-right: 10px; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-color); transition: var(--transition); padding: 8px 16px; border-radius: 8px; }
+        .nav-links a:hover { color: var(--primary-color); background: rgba(55,118,171,0.1); }
+        .theme-toggle { background: rgba(55, 118, 171, 0.1); border: none; color: var(--primary-color); padding: 12px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; transition: var(--transition); }
+        .theme-toggle:hover { background: var(--primary-color); color: white; }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; padding: 60px 0; text-align: center; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>'); background-size: cover; }
+        .header-content { position: relative; z-index: 2; }
+        .header h1 { font-size: 3rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .breadcrumb { margin: 20px 0; display: flex; align-items: center; gap: 10px; opacity: 0.9; justify-content: center; }
+        .breadcrumb a { color: white; text-decoration: none; }
+        .breadcrumb a:hover { color: var(--secondary-color); }
+
+        /* Sections */
+        .content { margin-top: 40px; }
+        .section { background: var(--card-bg); border-radius: var(--border-radius); padding: 40px; margin-bottom: 30px; box-shadow: var(--shadow); position: relative; }
+        .section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #9b59b6, #8e44ad); border-radius: var(--border-radius) var(--border-radius) 0 0; }
+        .section-title { font-size: 2rem; color: var(--primary-color); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .section-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #9b59b6, #8e44ad); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
+        .subsection { margin: 24px 0; }
+        .subsection-title { font-size: 1.3rem; color: var(--primary-color); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid rgba(55,118,171,0.12); }
+
+        /* Code Blocks */
+        .code-container { position: relative; margin: 16px 0; border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); }
+        .code-header { background: var(--primary-color); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: 500; }
+        .code-actions { display: flex; gap: 10px; }
+        .code-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: var(--transition); }
+        .code-btn:hover { background: rgba(255,255,255,0.3); }
+        .code-content { background: var(--code-bg); padding: 20px; overflow-x: auto; font-family: 'Fira Code','Monaco','Consolas',monospace; font-size: 1rem; line-height: 1.7; white-space: pre-wrap; word-break: break-word; border-left: 4px solid var(--primary-color); border-radius: 0 0 var(--border-radius) var(--border-radius); }
+        .code-output { background: #1e1e1e; color: #00ff00; padding: 15px 20px; font-family: monospace; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.1); display: none; }
+
+        /* Tables */
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--card-bg); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); }
+        .comparison-table th, .comparison-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(55,118,171,0.1); }
+        .comparison-table th { background: var(--primary-color); color: white; font-weight: 600; }
+
+        /* Navigation between topics */
+        .topic-navigation { display: flex; justify-content: space-between; margin-top: 40px; gap: 20px; }
+        .nav-card { flex: 1; background: var(--card-bg); border-radius: var(--border-radius); padding: 25px; text-decoration: none; color: inherit; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; }
+        .nav-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+        .nav-card.prev { text-align: left; }
+        .nav-card.next { text-align: right; }
+        .nav-label { font-size: 0.9rem; color: var(--primary-color); margin-bottom: 5px; }
+        .nav-title { font-size: 1.2rem; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .nav-content { flex-direction: column; gap: 20px; }
+            .nav-links { gap: 15px; }
+            .header h1 { font-size: 2rem; }
+            .section { padding: 25px; }
+            .topic-navigation { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">
+                <i class="fab fa-python"></i>
+                Python Learning Hub
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="string-operations.html">Previous</a>
+                <a href="algorithms.html">Next Topic</a>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Data Structures</span>
+                </div>
+                <h1>Python Data Structures</h1>
+                <p>Lists, dictionaries, sets, tuples, copying behavior, safe iteration, and sorting with practical examples</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <!-- 1. List Operations and Pitfalls -->
+            <section class="section" id="list-ops">
+                <h2 class="section-title"><div class="section-icon">📋</div>List Operations and Pitfalls</h2>
+                <p>Modifying a list while iterating can skip elements due to index shifting. Use the safe patterns below.</p>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Why modifying during iteration is dangerous</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - Iteration Pitfall</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('pitfall')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">arr = [1, 2, 3, 4, 5]
+print(f"Original array: {arr}")
+
+arr_copy = arr.copy()
+for i in arr_copy:
+    arr_copy.remove(i)
+    print(f"Removed {i}, array now: {arr_copy}")
+
+print(f"Final result: {arr_copy}")  # [2, 4] - elements were skipped!</div>
+                        <div class="code-output" id="pitfall-output"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Safe patterns</h3>
+                    <div class="code-container">
+                        <div class="code-header"><span>Python - Safe List Modification</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('safe')">Run</button></div></div>
+                        <div class="code-content"># Method 1: Iterate over a copy
+arr1 = [1, 2, 3, 4, 5]
+for x in arr1[:]:
+    if x % 2 == 1:
+        arr1.remove(x)
+print(f"After removing odds (copy): {arr1}")
+
+# Method 2: Iterate backwards by index
+arr2 = [1, 2, 3, 4, 5]
+for i in range(len(arr2) - 1, -1, -1):
+    if arr2[i] % 2 == 1:
+        arr2.pop(i)
+print(f"After removing odds (backwards): {arr2}")
+
+# Method 3: List comprehension (creates new list)
+arr3 = [1, 2, 3, 4, 5]
+arr3 = [x for x in arr3 if x % 2 == 0]
+print(f"After keeping evens (comprehension): {arr3}")</div>
+                        <div class="code-output" id="safe-output"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. List Copying Methods -->
+            <section class="section" id="copying">
+                <h2 class="section-title"><div class="section-icon">🧬</div>List Copying Methods</h2>
+                <p>Different ways to copy a list and how identity vs equality behaves.</p>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Copying Lists</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('copy')">Run</button></div></div>
+                    <div class="code-content">original = [1, 2, 3, 4, 5]
+copy1 = original[:]
+copy2 = original.copy()
+copy3 = list(original)
+
+print(f"Slice copy: {copy1}")
+print(f"Built-in copy: {copy2}")
+print(f"Constructor copy: {copy3}")
+print(f"original is copy1: {original is copy1}")
+print(f"original == copy1: {original == copy1}")
+
+print("\nNote: arr[:] makes a COPY of arr, not a reference!")</div>
+                    <div class="code-output" id="copy-output"></div>
+                </div>
+            </section>
+
+            <!-- 3. Sorting: sort() vs sorted() -->
+            <section class="section" id="sorting">
+                <h2 class="section-title"><div class="section-icon">↕️</div>Sorting: sort() vs sorted()</h2>
+                <div class="subsection">
+                    <h3 class="subsection-title">Comparison</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr><th>Feature</th><th>sort()</th><th>sorted()</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Mutability</td><td>Modifies original list</td><td>Returns new list</td></tr>
+                            <tr><td>Usage</td><td>Lists only</td><td>Any iterable</td></tr>
+                            <tr><td>Return Value</td><td>None</td><td>New list</td></tr>
+                            <tr><td>Stability</td><td>Stable</td><td>Stable</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Sorting Examples</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('sorting')">Run</button></div></div>
+                    <div class="code-content">nums = [4, 1, 7, 3]
+print(f"Original: {nums}")
+
+nums_copy = nums.copy(); nums_copy.sort(); print(f"After sort(): {nums_copy}")
+new_sorted = sorted(nums)
+print(f"sorted() result: {new_sorted}")
+print(f"Original unchanged: {nums}")
+
+words = ["apple", "pear", "kiwi", "banana"]
+print(f"\nWords: {words}")
+print(f"Descending: {sorted(words, reverse=True)}")
+print(f"By length: {sorted(words, key=len)}")
+print(f"By last letter: {sorted(words, key=lambda w: w[-1])}")</div>
+                    <div class="code-output" id="sorting-output"></div>
+                </div>
+            </section>
+
+            <!-- 4. Split vs RSplit (useful string op in DS work) -->
+            <section class="section" id="split">
+                <h2 class="section-title"><div class="section-icon">✂️</div>split() vs rsplit()</h2>
+                <div class="subsection">
+                    <h3 class="subsection-title">Comparison</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr><th>Feature</th><th>str.split()</th><th>str.rsplit()</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Direction</td><td>Left to right</td><td>Right to left</td></tr>
+                            <tr><td>Default Separator</td><td>Whitespace</td><td>Whitespace</td></tr>
+                            <tr><td>maxsplit</td><td>From start</td><td>From end</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - split vs rsplit</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('split')">Run</button></div></div>
+                    <div class="code-content">text = "one two three four five"
+print(f"split(maxsplit=2): {text.split(maxsplit=2)}")
+print(f"rsplit(maxsplit=2): {text.rsplit(maxsplit=2)}")
+
+file_path = "folder/subfolder/file.txt"
+print(f"split('/', 1): {file_path.split('/', maxsplit=1)}")
+print(f"rsplit('/', 1): {file_path.rsplit('/', maxsplit=1)}")</div>
+                    <div class="code-output" id="split-output"></div>
+                </div>
+            </section>
+
+            <!-- 5. Tuples -->
+            <section class="section" id="tuples">
+                <h2 class="section-title"><div class="section-icon">🔒</div>Tuples and Their Properties</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Tuples</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('tuples')">Run</button></div></div>
+                    <div class="code-content">t1 = (1, 2, 3, 4, 5)
+print(f"Tuple: {t1}")
+try:
+    t1[0] = 10
+except TypeError as e:
+    print(f"Cannot modify tuple: {e}")
+
+t2 = t1[:]
+print(f"t1 is t2 (same object): {t1 is t2}")
+
+a, b, c, d, e = t1
+print(f"Unpacked: a={a}, b={b}, c={c}, d={d}, e={e}")
+
+tuple_dict = {(1, 2): "coordinates", (3, 4): "another point"}
+print(f"Tuple as keys: {tuple_dict}")</div>
+                    <div class="code-output" id="tuples-output"></div>
+                </div>
+            </section>
+
+            <!-- 6. Sets -->
+            <section class="section" id="sets">
+                <h2 class="section-title"><div class="section-icon">🧩</div>Sets and Their Operations</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Sets</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('sets')">Run</button></div></div>
+                    <div class="code-content">set1 = {1, 2, 3, 4, 5}
+set2 = {4, 5, 6, 7, 8}
+print(f"Union: {set1 | set2}")
+print(f"Intersection: {set1 & set2}")
+print(f"Difference: {set1 - set2}")
+print(f"Symmetric difference: {set1 ^ set2}")
+
+list_with_duplicates = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+unique_set = set(list_with_duplicates)
+print(f"Unique elements from list: {unique_set}")</div>
+                    <div class="code-output" id="sets-output"></div>
+                </div>
+            </section>
+
+            <!-- 7. Dictionaries -->
+            <section class="section" id="dicts">
+                <h2 class="section-title"><div class="section-icon">📖</div>Dictionaries and Their Methods</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - Dictionaries</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('dicts')">Run</button></div></div>
+                    <div class="code-content">person = {"name": "Alice", "age": 30, "city": "New York"}
+print(f"Name: {person.get('name', 'Unknown')}")
+print(f"Country: {person.get('country', 'Not specified')}")
+print(f"Keys: {list(person.keys())}")
+print(f"Values: {list(person.values())}")
+print(f"Items: {list(person.items())}")
+
+squares_dict = {x: x**2 for x in range(1, 6)}
+print(f"Squares dict: {squares_dict}")
+
+additional_info = {"country": "USA", "profession": "Engineer"}
+merged = {**person, **additional_info}
+print(f"Merged dict: {merged}")</div>
+                    <div class="code-output" id="dicts-output"></div>
+                </div>
+            </section>
+
+            <!-- 8. Useful List Methods -->
+            <section class="section" id="list-methods">
+                <h2 class="section-title"><div class="section-icon">🧰</div>Useful List Methods</h2>
+                <div class="code-container">
+                    <div class="code-header"><span>Python - List Methods</span><div class="code-actions"><button class="code-btn" onclick="copyCode(this)">Copy</button><button class="code-btn" onclick="runExample('listmethods')">Run</button></div></div>
+                    <div class="code-content">demo_list = [1, 2, 3, 2, 4, 2, 5]
+print(f"Count of 2: {demo_list.count(2)}")
+print(f"Index of first 2: {demo_list.index(2)}")
+print(f"Index of 2 after position 2: {demo_list.index(2, 3)}")
+demo_list.append(6)
+demo_list.insert(0, 0)
+demo_list.extend([7, 8, 9])
+removed = demo_list.pop()
+demo_list.remove(2)
+demo_list.reverse()
+print(f"Final list: {demo_list}; Last popped: {removed}")</div>
+                    <div class="code-output" id="listmethods-output"></div>
+                </div>
+            </section>
+            </div>
+
+        <!-- Navigation -->
+        <div class="topic-navigation">
+            <a href="string-operations.html" class="nav-card prev">
+                <div class="nav-label">← Previous</div>
+                <div class="nav-title">String Operations</div>
+            </a>
+            <a href="algorithms.html" class="nav-card next">
+                <div class="nav-label">Next →</div>
+                <div class="nav-title">Algorithms</div>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Copy code helper
+        function copyCode(button) {
+            const codeContent = button.closest('.code-container').querySelector('.code-content').textContent;
+            navigator.clipboard.writeText(codeContent).then(() => {
+                const original = button.textContent; button.textContent = 'Copied!'; setTimeout(() => { button.textContent = original; }, 2000);
+            });
+        }
+
+        // Simulated runners
+        function runExample(type) {
+            const outputs = {
+                pitfall: `Original array: [1, 2, 3, 4, 5]
+Removed 1, array now: [2, 3, 4, 5]
+Removed 3, array now: [2, 4, 5]
+Removed 5, array now: [2, 4]
+Final result: [2, 4]`,
+                safe: `After removing odds (copy): [2, 4]
+After removing odds (backwards): [2, 4]
+After keeping evens (comprehension): [2, 4]`,
+                copy: `Slice copy: [1, 2, 3, 4, 5]
+Built-in copy: [1, 2, 3, 4, 5]
+Constructor copy: [1, 2, 3, 4, 5]
+original is copy1: false
+original == copy1: true
+
+Note: arr[:] makes a COPY of arr, not a reference!`,
+                sorting: `Original: [4, 1, 7, 3]
+After sort(): [1, 3, 4, 7]
+sorted() result: [1, 3, 4, 7]
+Original unchanged: [4, 1, 7, 3]
+
+Words: ["apple", "pear", "kiwi", "banana"]
+Descending: ["pear", "kiwi", "banana", "apple"]
+By length: ["kiwi", "pear", "apple", "banana"]
+By last letter: ["banana", "apple", "pear", "kiwi"]`,
+                split: `split(maxsplit=2): ["one", "two", "three four five"]
+rsplit(maxsplit=2): ["one two three", "four", "five"]
+split('/', 1): ["folder", "subfolder/file.txt"]
+rsplit('/', 1): ["folder/subfolder", "file.txt"]`,
+                tuples: `Tuple: (1, 2, 3, 4, 5)
+Cannot modify tuple: 'tuple' object does not support item assignment
+t1 is t2 (same object): true
+Unpacked: a=1, b=2, c=3, d=4, e=5
+Tuple as keys: {(1, 2): 'coordinates', (3, 4): 'another point'}`,
+                sets: `Union: {1, 2, 3, 4, 5, 6, 7, 8}
+Intersection: {4, 5}
+Difference: {1, 2, 3}
+Symmetric difference: {1, 2, 3, 6, 7, 8}
+Unique elements from list: {1, 2, 3, 4}`,
+                dicts: `Name: Alice
+Country: Not specified
+Keys: ['name', 'age', 'city']
+Values: ['Alice', 30, 'New York']
+Items: [('name', 'Alice'), ('age', 30), ('city', 'New York')]
+Squares dict: {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+Merged dict: {'name': 'Alice', 'age': 30, 'city': 'New York', 'country': 'USA', 'profession': 'Engineer'}`,
+                listmethods: `Count of 2: 3
+Index of first 2: 1
+Index of 2 after position 2: 3
+Final list: [9, 8, 7, 5, 4, 2, 2, 2, 1, 0]; Last popped: 9`
+            };
+            const output = document.getElementById(type + '-output');
+            output.textContent = outputs[type];
+            output.style.display = 'block';
+        }
+
+        // Track page visit
+        function trackVisit() {
+            let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            const currentPage = 'data-structures.html';
+            if (!visitedPages.includes(currentPage)) {
+                visitedPages.push(currentPage);
+                localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() { initTheme(); trackVisit(); });
+    </script>
+</body>
+</html>
+
+
+
+

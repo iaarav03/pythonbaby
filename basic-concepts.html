@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Python Concepts - Python Learning Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --code-bg: #f8f9fa;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --code-bg: #1e1e1e;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-brand i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.1);
+        }
+
+        .theme-toggle {
+            background: rgba(55, 118, 171, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.8;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Content */
+        .content {
+            margin-top: 40px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin: 30px 0;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(55, 118, 171, 0.1);
+        }
+
+        /* Code Blocks */
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .code-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .code-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .code-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .code-content {
+            background: var(--code-bg);
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 1rem;
+            line-height: 1.7;
+            white-space: pre-wrap; /* preserve line breaks and wrap long lines */
+            word-break: break-word; /* avoid horizontal scrolling on small screens */
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .code-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Interactive Examples */
+        .interactive-example {
+            background: linear-gradient(135deg, rgba(55, 118, 171, 0.1), rgba(48, 105, 152, 0.1));
+            border: 2px solid rgba(55, 118, 171, 0.2);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .example-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .run-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-top: 15px;
+        }
+
+        .run-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        /* Tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(55, 118, 171, 0.1);
+        }
+
+        .comparison-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(55, 118, 171, 0.05);
+        }
+
+        /* Key Points */
+        .key-points {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .key-points h4 {
+            color: #F57C00;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-points ul {
+            margin-left: 20px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+        }
+
+        /* Navigation between topics */
+        .topic-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            gap: 20px;
+        }
+
+        .nav-card {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .nav-card.prev {
+            text-align: left;
+        }
+
+        .nav-card.next {
+            text-align: right;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .nav-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .topic-navigation {
+                flex-direction: column;
+            }
+
+            .code-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">
+                <i class="fab fa-python"></i>
+                Python Learning Hub
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="string-operations.html">Next Topic</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Basic Concepts</span>
+                </div>
+                <h1>Basic Python Concepts</h1>
+                <p>Master the fundamental building blocks of Python programming</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="content">
+            
+            <!-- Mutable vs Immutable -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">🎯</div>
+                    Mutable vs Immutable Types
+                </h2>
+                
+                <p>Understanding the difference between mutable and immutable types is crucial for Python programming. This affects how objects behave when you modify them.</p>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Key Differences</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Mutable</th>
+                                <th>Immutable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Definition</td>
+                                <td>Can be changed after creation</td>
+                                <td>Cannot be changed after creation</td>
+                            </tr>
+                            <tr>
+                                <td>Data Types</td>
+                                <td>list, dict, set, bytearray</td>
+                                <td>int, float, str, tuple, frozenset</td>
+                            </tr>
+                            <tr>
+                                <td>Behavior</td>
+                                <td>Changes happen in place</td>
+                                <td>Creates new object for changes</td>
+                            </tr>
+                            <tr>
+                                <td>Hashability</td>
+                                <td>Not hashable</td>
+                                <td>Hashable</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        Interactive Example: Mutable Types
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - Mutable List Example</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('mutable')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# Mutable list - can be changed in place
+mutable_list = [1, 2, 3]
+print(f"Original list: {mutable_list}")
+print(f"ID: {id(mutable_list)}")
+
+mutable_list.append(4)
+print(f"After append: {mutable_list}")
+print(f"ID: {id(mutable_list)}")  # Same ID - modified in place
+
+# Mutable dictionary
+mutable_dict = {'a': 1, 'b': 2}
+print(f"Original dict: {mutable_dict}")
+mutable_dict['c'] = 3
+print(f"After adding key: {mutable_dict}")
+                        </div>
+                        <div class="code-output" id="mutable-output"></div>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        Interactive Example: Immutable Types
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - Immutable String Example</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('immutable')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# Immutable string - creates new object
+immutable_string = "hello"
+print(f"Original string: '{immutable_string}'")
+print(f"ID: {id(immutable_string)}")
+
+new_string = immutable_string + " world"
+print(f"After concatenation: '{new_string}'")
+print(f"New string ID: {id(new_string)}")  # Different ID - new object
+print(f"Original unchanged: '{immutable_string}'")
+
+# Tuple slicing optimization
+t1 = (10, 20, 30)
+t2 = t1[:]
+print(f"t1 is t2: {t1 is t2}")  # True - same object (optimization)
+                        </div>
+                        <div class="code-output" id="immutable-output"></div>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
+                    <ul>
+                        <li>Mutable objects can be changed in place, keeping the same memory address</li>
+                        <li>Immutable objects create new objects when "modified"</li>
+                        <li>Immutable objects can be used as dictionary keys (hashable)</li>
+                        <li>Python optimizes immutable objects by reusing them when possible</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Operator Precedence -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">⚖️</div>
+                    Operator Precedence & Associativity
+                </h2>
+                
+                <p>Understanding operator precedence helps you write correct expressions and predict how Python evaluates complex statements.</p>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Precedence Table (Highest to Lowest)</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Precedence</th>
+                                <th>Operators</th>
+                                <th>Description</th>
+                                <th>Associativity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>()</td><td>Parentheses</td><td>Left to right</td></tr>
+                            <tr><td>2</td><td>x[index], x[:]</td><td>Subscription, slicing</td><td>Left to right</td></tr>
+                            <tr><td>3</td><td>**</td><td>Exponentiation</td><td>Right to left</td></tr>
+                            <tr><td>4</td><td>+x, -x, ~x</td><td>Unary operators</td><td>Right to left</td></tr>
+                            <tr><td>5</td><td>*, /, //, %</td><td>Multiplication, division</td><td>Left to right</td></tr>
+                            <tr><td>6</td><td>+, -</td><td>Addition, subtraction</td><td>Left to right</td></tr>
+                            <tr><td>7</td><td>&lt;&lt;, &gt;&gt;</td><td>Bit shifts</td><td>Left to right</td></tr>
+                            <tr><td>8</td><td>&amp;</td><td>Bitwise AND</td><td>Left to right</td></tr>
+                            <tr><td>9</td><td>^</td><td>Bitwise XOR</td><td>Left to right</td></tr>
+                            <tr><td>10</td><td>|</td><td>Bitwise OR</td><td>Left to right</td></tr>
+                            <tr><td>11</td><td>==, !=, &lt;, &gt;, in, is</td><td>Comparisons</td><td>Left to right</td></tr>
+                            <tr><td>12</td><td>not</td><td>Boolean NOT</td><td>Right to left</td></tr>
+                            <tr><td>13</td><td>and</td><td>Boolean AND</td><td>Left to right</td></tr>
+                            <tr><td>14</td><td>or</td><td>Boolean OR</td><td>Left to right</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        Precedence Examples
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - Operator Precedence</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('precedence')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# Precedence examples
+print("Arithmetic precedence:")
+print(f"2 + 3 * 4 = {2 + 3 * 4}")          # Multiplication first: 14
+print(f"(2 + 3) * 4 = {(2 + 3) * 4}")      # Parentheses first: 20
+
+print("\nExponentiation (right associative):")
+print(f"2 ** 3 ** 2 = {2 ** 3 ** 2}")      # Right to left: 2**(3**2) = 512
+print(f"(2 ** 3) ** 2 = {(2 ** 3) ** 2}")  # Left to right: (2**3)**2 = 64
+
+print("\nSubtraction (left associative):")
+print(f"10 - 5 - 2 = {10 - 5 - 2}")        # Left to right: (10-5)-2 = 3
+print(f"10 - (5 - 2) = {10 - (5 - 2)}")    # With parentheses: 10-3 = 7
+
+print("\nComparison and logical:")
+print(f"5 > 3 and 2 < 4 = {5 > 3 and 2 < 4}")  # Comparisons before 'and'
+print(f"not 5 > 10 = {not 5 > 10}")             # 'not' has lower precedence
+                        </div>
+                        <div class="code-output" id="precedence-output"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- List Comprehensions -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">📝</div>
+                    List Comprehensions
+                </h2>
+                
+                <p>List comprehensions provide a concise way to create lists using a more readable and efficient syntax.</p>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Syntax Pattern</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>List Comprehension Syntax</span>
+                        </div>
+                        <div class="code-content">
+[expression for item in iterable if condition]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        List Comprehension Examples
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - List Comprehensions</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('comprehensions')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# Basic list comprehension
+squares = [x**2 for x in range(10)]
+print(f"Squares: {squares}")
+
+# With condition
+even_squares = [x**2 for x in range(10) if x % 2 == 0]
+print(f"Even squares: {even_squares}")
+
+# String manipulation
+words = ["hello", "world", "python"]
+uppercase = [word.upper() for word in words]
+print(f"Uppercase: {uppercase}")
+
+# Nested comprehension (2D list)
+matrix = [[i*j for j in range(1, 4)] for i in range(1, 4)]
+print(f"Multiplication table:")
+for row in matrix:
+    print(row)
+
+# Complex example: filtering and transforming
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+processed = [x**2 for x in numbers if x % 2 == 1]
+print(f"Squares of odd numbers: {processed}")
+                        </div>
+                        <div class="code-output" id="comprehensions-output"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ZIP Function -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">🔗</div>
+                    ZIP Function & Parallel Iteration
+                </h2>
+                
+                <p>The zip() function allows you to iterate over multiple sequences in parallel, creating tuples of corresponding elements.</p>
+
+                <div class="interactive-example">
+                    <h4 class="example-title">
+                        <i class="fas fa-play-circle"></i>
+                        ZIP Function Examples
+                    </h4>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Python - ZIP Function</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCode(this)">Copy</button>
+                                <button class="code-btn" onclick="runExample('zip')">Run</button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+# Basic zip usage
+list1 = [1, 2, 3]
+list2 = ['a', 'b', 'c']
+list3 = [10, 20, 30]
+
+print("Zipping two lists:")
+for x, y in zip(list1, list2):
+    print(f"{x} -> {y}")
+
+print("\nZipping three lists:")
+for x, y, z in zip(list1, list2, list3):
+    print(f"{x}, {y}, {z}")
+
+# Creating dictionary from two lists
+dict_from_zip = dict(zip(list2, list1))
+print(f"\nDictionary from zip: {dict_from_zip}")
+
+# Unzipping (using zip with *)
+pairs = [(1, 'a'), (2, 'b'), (3, 'c')]
+numbers, letters = zip(*pairs)
+print(f"\nUnzipped numbers: {numbers}")
+print(f"Unzipped letters: {letters}")
+
+# Practical example: combining data
+names = ['Alice', 'Bob', 'Charlie']
+ages = [25, 30, 35]
+cities = ['New York', 'London', 'Tokyo']
+
+print("\nPerson information:")
+for name, age, city in zip(names, ages, cities):
+    print(f"{name}, {age} years old, lives in {city}")
+                        </div>
+                        <div class="code-output" id="zip-output"></div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Navigation -->
+        <div class="topic-navigation">
+            <a href="index.html" class="nav-card prev">
+                <div class="nav-label">← Previous</div>
+                <div class="nav-title">Home</div>
+            </a>
+            <a href="string-operations.html" class="nav-card next">
+                <div class="nav-label">Next →</div>
+                <div class="nav-title">String Operations</div>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeContent = button.closest('.code-container').querySelector('.code-content').textContent;
+            navigator.clipboard.writeText(codeContent).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Simulated code execution
+        function runExample(exampleType) {
+            const outputs = {
+                mutable: `Original list: [1, 2, 3]
+ID: 140234567890
+After append: [1, 2, 3, 4]
+ID: 140234567890
+Original dict: {'a': 1, 'b': 2}
+After adding key: {'a': 1, 'b': 2, 'c': 3}`,
+                
+                immutable: `Original string: 'hello'
+ID: 140234567891
+After concatenation: 'hello world'
+New string ID: 140234567892
+Original unchanged: 'hello'
+t1 is t2: True`,
+                
+                precedence: `Arithmetic precedence:
+2 + 3 * 4 = 14
+(2 + 3) * 4 = 20
+
+Exponentiation (right associative):
+2 ** 3 ** 2 = 512
+(2 ** 3) ** 2 = 64
+
+Subtraction (left associative):
+10 - 5 - 2 = 3
+10 - (5 - 2) = 7
+
+Comparison and logical:
+5 > 3 and 2 < 4 = True
+not 5 > 10 = True`,
+                
+                comprehensions: `Squares: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+Even squares: [0, 4, 16, 36, 64]
+Uppercase: ['HELLO', 'WORLD', 'PYTHON']
+Multiplication table:
+[1, 2, 3]
+[2, 4, 6]
+[3, 6, 9]
+Squares of odd numbers: [1, 9, 25, 49, 81]`,
+                
+                zip: `Zipping two lists:
+1 -> a
+2 -> b
+3 -> c
+
+Zipping three lists:
+1, a, 10
+2, b, 20
+3, c, 30
+
+Dictionary from zip: {'a': 1, 'b': 2, 'c': 3}
+
+Unzipped numbers: (1, 2, 3)
+Unzipped letters: ('a', 'b', 'c')
+
+Person information:
+Alice, 25 years old, lives in New York
+Bob, 30 years old, lives in London
+Charlie, 35 years old, lives in Tokyo`
+            };
+            
+            const outputElement = document.getElementById(exampleType + '-output');
+            outputElement.textContent = outputs[exampleType];
+            outputElement.style.display = 'block';
+        }
+
+        // Track page visit for progress
+        function trackVisit() {
+            let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            const currentPage = 'basic-concepts.html';
+            
+            if (!visitedPages.includes(currentPage)) {
+                visitedPages.push(currentPage);
+                localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            trackVisit();
+        });
+    </script>
+</body>
+</html>

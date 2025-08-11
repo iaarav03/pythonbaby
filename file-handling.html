@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python File Handling - Complete Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(55, 118, 171, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(55, 118, 171, 0.2);
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(55, 118, 171, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(55, 118, 171, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .main-title {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            color: var(--text-color);
+        }
+
+        /* Navigation */
+        .nav-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            background: rgba(55, 118, 171, 0.05);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(55, 118, 171, 0.3);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .nav-item:hover i {
+            color: white;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary-color);
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subsection-title i {
+            color: var(--primary-color);
+        }
+
+        .content-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+            border-left: 4px solid var(--primary-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-block::before {
+            content: 'Python';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            position: relative;
+            padding-left: 35px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .feature-list li::before {
+            content: '🐍';
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        /* Tables */
+        .mode-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .mode-table th,
+        .mode-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(55, 118, 171, 0.1);
+        }
+
+        .mode-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .mode-table tr:nth-child(even) {
+            background: rgba(55, 118, 171, 0.05);
+        }
+
+        .mode-table tr:hover {
+            background: rgba(55, 118, 171, 0.1);
+        }
+
+        /* Warning/Info boxes */
+        .info-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+            background: rgba(55, 118, 171, 0.05);
+        }
+
+        .warning-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #ff6b35;
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .info-box .box-title,
+        .warning-box .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box .box-title {
+            color: var(--primary-color);
+        }
+
+        .warning-box .box-title {
+            color: #ff6b35;
+        }
+
+        /* Exercise sections */
+        .exercise-section {
+            background: linear-gradient(135deg, rgba(55, 118, 171, 0.1), rgba(48, 105, 152, 0.05));
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(55, 118, 171, 0.1);
+        }
+
+        .exercise-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-list li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .exercise-list li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .back-button,
+            .theme-toggle {
+                position: static;
+                margin: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content-section {
+                padding: 25px;
+            }
+            
+            .code-block {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Hub
+            </a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            
+            <h1 class="main-title">Python File Handling</h1>
+            <p class="subtitle">Complete Guide to File Operations, Context Managers, and Advanced Techniques</p>
+        </header>
+
+        <!-- Navigation -->
+        <section class="nav-section">
+            <h2 class="nav-title">Quick Navigation</h2>
+            <div class="nav-grid">
+                <a href="#why-file-handling" class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    Why File Handling?
+                </a>
+                <a href="#file-basics" class="nav-item">
+                    <i class="fas fa-file"></i>
+                    File Basics
+                </a>
+                <a href="#file-modes" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    File Modes
+                </a>
+                <a href="#reading-writing" class="nav-item">
+                    <i class="fas fa-edit"></i>
+                    Reading & Writing
+                </a>
+                <a href="#context-managers" class="nav-item">
+                    <i class="fas fa-shield-alt"></i>
+                    Context Managers
+                </a>
+                <a href="#random-access" class="nav-item">
+                    <i class="fas fa-random"></i>
+                    Random Access
+                </a>
+                <a href="#binary-files" class="nav-item">
+                    <i class="fas fa-file-code"></i>
+                    Binary Files
+                </a>
+                <a href="#advanced-techniques" class="nav-item">
+                    <i class="fas fa-rocket"></i>
+                    Advanced Techniques
+                </a>
+                <a href="#best-practices" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    Best Practices
+                </a>
+                <a href="#exam-questions" class="nav-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    Exam Questions
+                </a>
+            </div>
+        </section>
+
+        <!-- Why File Handling -->
+        <section id="why-file-handling" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-question-circle"></i>
+                1. Why File Handling is Needed
+            </h2>
+            
+            <div class="content-text">
+                Before file handling, all the programs you've written run in RAM (volatile memory). Once your program stops, everything in RAM is erased.
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-database"></i>
+                    Why we need files:
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Persistence of data:</strong> Without files, any data disappears when the program ends. Files store data permanently in secondary storage (disk).</li>
+                    <li><strong>Handling large datasets:</strong> Inputting thousands of lines via console is tedious. You can store the data in a file and read it into the program.</li>
+                    <li><strong>Limited memory:</strong> RAM is small; storing and displaying huge data in memory can be impractical. Use files to store large data and read/write only parts as needed.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- File Basics -->
+        <section id="file-basics" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-file"></i>
+                2. What is a File?
+            </h2>
+            
+            <div class="content-text">
+                A file is a named location on disk that stores data permanently.
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-list"></i>
+                    Files can store:
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Text (human-readable):</strong> Characters, numbers, and symbols that can be read by humans</li>
+                    <li><strong>Binary (non-human-readable):</strong> Data in binary format (0s and 1s)</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-file-alt"></i>
+                    3. Types of Files
+                </h3>
+                
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">3.1 Text Files</h4>
+                <div class="content-text">
+                    Store characters, numbers, and symbols in human-readable form. Can be opened in any text editor.
+                </div>
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        Examples
+                    </div>
+                    .txt, .csv, .py, .json
+                </div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">3.2 Binary Files</h4>
+                <div class="content-text">
+                    Store data in binary format (0s and 1s), not directly readable. Used for images, audio, video, executables, compressed files.
+                </div>
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        Examples
+                    </div>
+                    .jpg, .mp3, .exe, .zip
+                </div>
+            </div>
+        </section>
+
+        <!-- File Operations -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>
+                4. Basic File Operations in Python
+            </h2>
+            
+            <div class="content-text">
+                The four main operations are:
+            </div>
+
+            <ul class="feature-list">
+                <li><strong>Open a file:</strong> Create a connection to the file</li>
+                <li><strong>Read data from a file:</strong> Retrieve content from the file</li>
+                <li><strong>Write data to a file:</strong> Store content in the file</li>
+                <li><strong>Close the file:</strong> Terminate the connection</li>
+            </ul>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Other useful operations:
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Seek:</strong> Move the file pointer to a specific position</li>
+                    <li><strong>Tell:</strong> Get current file pointer position</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Opening Files -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-folder-open"></i>
+                5. Opening a File
+            </h2>
+            
+            <div class="content-text">
+                We use Python's built-in <code>open()</code> function:
+            </div>
+
+            <div class="code-block">file_object = open(filename, mode)</div>
+
+            <ul class="feature-list">
+                <li><strong>filename:</strong> Name or full path of the file</li>
+                <li><strong>mode:</strong> Specifies read/write/append and text/binary</li>
+                <li><strong>Returns:</strong> A file object (file handler/pointer)</li>
+            </ul>
+
+            <div class="info-box">
+                <div class="box-title">
+                    <i class="fas fa-info-circle"></i>
+                    File Pointer
+                </div>
+                Tracks the current position in the file.
+            </div>
+        </section>
+
+        <!-- File Modes -->
+        <section id="file-modes" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-cog"></i>
+                6. File Modes
+            </h2>
+            
+            <table class="mode-table">
+                <thead>
+                    <tr>
+                        <th>Mode</th>
+                        <th>Meaning</th>
+                        <th>Pointer Position</th>
+                        <th>Creates File?</th>
+                        <th>Overwrites?</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>r</code></td>
+                        <td>Read (text)</td>
+                        <td>Beginning</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>Error if file doesn't exist</td>
+                    </tr>
+                    <tr>
+                        <td><code>w</code></td>
+                        <td>Write (text)</td>
+                        <td>Beginning</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Erases existing content</td>
+                    </tr>
+                    <tr>
+                        <td><code>a</code></td>
+                        <td>Append (text)</td>
+                        <td>End</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>Adds new data at end</td>
+                    </tr>
+                    <tr>
+                        <td><code>r+</code></td>
+                        <td>Read & Write (text)</td>
+                        <td>Beginning</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>Can overwrite parts</td>
+                    </tr>
+                    <tr>
+                        <td><code>w+</code></td>
+                        <td>Write & Read (text)</td>
+                        <td>Beginning</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Erases existing content</td>
+                    </tr>
+                    <tr>
+                        <td><code>a+</code></td>
+                        <td>Append & Read (text)</td>
+                        <td>End</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>Read requires seek(0)</td>
+                    </tr>
+                    <tr>
+                        <td><code>rb</code></td>
+                        <td>Read (binary)</td>
+                        <td>Beginning</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>For binary files</td>
+                    </tr>
+                    <tr>
+                        <td><code>wb</code></td>
+                        <td>Write (binary)</td>
+                        <td>Beginning</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>For binary files</td>
+                    </tr>
+                    <tr>
+                        <td><code>ab</code></td>
+                        <td>Append (binary)</td>
+                        <td>End</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>For binary files</td>
+                    </tr>
+                    <tr>
+                        <td><code>rb+</code></td>
+                        <td>Read & Write (binary)</td>
+                        <td>Beginning</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>Binary + overwrite</td>
+                    </tr>
+                    <tr>
+                        <td><code>wb+</code></td>
+                        <td>Write & Read (binary)</td>
+                        <td>Beginning</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Binary + overwrite</td>
+                    </tr>
+                    <tr>
+                        <td><code>ab+</code></td>
+                        <td>Append & Read (binary)</td>
+                        <td>End</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>Binary append</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Reading and Writing -->
+        <section id="reading-writing" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-edit"></i>
+                7. Reading from a File
+            </h2>
+            
+            <div class="code-block">f = open("data.txt", "r")
+data = f.read()       # Reads entire file
+print(data)
+f.close()</div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-list"></i>
+                    Other reading methods:
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>f.readline():</strong> Reads one line at a time</li>
+                    <li><strong>f.readlines():</strong> Returns list of all lines</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 40px;">
+                <i class="fas fa-pen"></i>
+                8. Writing to a File
+            </h2>
+            
+            <div class="code-block">f = open("data.txt", "w")
+f.write("Hello, Python!\n")
+f.close()</div>
+
+            <div class="warning-box">
+                <div class="box-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Warning
+                </div>
+                Overwrites existing file if it exists.
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-plus"></i>
+                    To append:
+                </h3>
+                
+                <div class="code-block">f = open("data.txt", "a")
+f.write("New line.\n")
+f.close()</div>
+            </div>
+        </section>
+
+        <!-- Seek and Tell -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-crosshairs"></i>
+                9. Seek & Tell
+            </h2>
+            
+            <ul class="feature-list">
+                <li><strong>tell():</strong> Get current file pointer position</li>
+                <li><strong>seek(offset, whence):</strong> Move pointer to specific position</li>
+            </ul>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-info-circle"></i>
+                    Whence parameter values:
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>whence = 0:</strong> beginning (default)</li>
+                    <li><strong>whence = 1:</strong> current position</li>
+                    <li><strong>whence = 2:</strong> end of file</li>
+                </ul>
+            </div>
+
+            <div class="code-block">f = open("data.txt", "r+")
+print(f.tell())    # 0
+f.seek(5)          # Move to 5th byte
+print(f.tell())    # 5</div>
+        </section>
+
+        <!-- Binary Files -->
+        <section id="binary-files" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-file-code"></i>
+                10. Working with Binary Files
+            </h2>
+            
+            <div class="code-block"># Copy an image
+f1 = open("image1.jpg", "rb")
+f2 = open("image_copy.jpg", "wb")
+
+for chunk in f1:
+    f2.write(chunk)
+
+f1.close()
+f2.close()</div>
+
+            <div class="info-box">
+                <div class="box-title">
+                    <i class="fas fa-info-circle"></i>
+                    Why Binary Mode?
+                </div>
+                Binary mode avoids encoding/decoding, so it's used for images, audio, etc.
+            </div>
+        </section>
+
+        <!-- Context Managers -->
+        <section id="context-managers" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                11. Using with Statement (Context Managers)
+            </h2>
+            
+            <div class="content-text">
+                Automatic file closing (best practice):
+            </div>
+
+            <div class="code-block">with open("data.txt", "r") as f:
+    data = f.read()
+    print(data)
+# File automatically closed here</div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-shield-alt"></i>
+                    The Problem with Manual Closing
+                </h3>
+                
+                <div class="content-text">
+                    If you do manual closing and an error occurs before <code>f.close()</code> runs, the file stays open, which can:
+                </div>
+
+                <ul class="feature-list">
+                    <li>Lock the file for other programs</li>
+                    <li>Cause data corruption if writing</li>
+                    <li>Waste system resources</li>
+                </ul>
+
+                <div class="code-block">f = open("data.txt", "r")
+data = f.read()
+1 / 0       # ❌ Exception before close()
+f.close()   # Never runs</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-check-circle"></i>
+                    The Solution: Context Managers
+                </h3>
+                
+                <div class="content-text">
+                    A context manager automatically handles opening and closing the file, even if errors occur.
+                </div>
+
+                <div class="code-block">with open("data.txt", "r") as f:
+    data = f.read()
+    print(data)
+# File is automatically closed here</div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        How it works
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li>When the with block starts → calls f.__enter__()</li>
+                        <li>When the block ends (even if an error occurs) → calls f.__exit__() which closes the file</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-copy"></i>
+                    Multiple Files in One with
+                </h3>
+                
+                <div class="content-text">
+                    You can manage more than one file at once:
+                </div>
+
+                <div class="code-block">with open("input.txt", "r") as fin, open("output.txt", "w") as fout:
+    for line in fin:
+        fout.write(line.upper())</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-star"></i>
+                    Why It's Better
+                </h3>
+                
+                <ul class="feature-list">
+                    <li>✅ No risk of forgetting close()</li>
+                    <li>✅ Works even with exceptions</li>
+                    <li>✅ Cleaner, shorter code</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-file-image"></i>
+                    Combining with Binary Files
+                </h3>
+                
+                <div class="content-text">
+                    You can also use it for binary data:
+                </div>
+
+                <div class="code-block">with open("photo.jpg", "rb") as src, open("copy.jpg", "wb") as dest:
+    for chunk in src:
+        dest.write(chunk)</div>
+            </div>
+        </section>
+
+        <!-- Random Access -->
+        <section id="random-access" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-random"></i>
+                12. Random File Access with seek() and tell()
+            </h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-crosshairs"></i>
+                    1. The File Pointer
+                </h3>
+                
+                <div class="content-text">
+                    Think of the file pointer as a cursor that shows where the next read or write will happen.
+                </div>
+
+                <div class="content-text">
+                    When you open a file:
+                </div>
+
+                <ul class="feature-list">
+                    <li><strong>In read mode:</strong> pointer starts at the beginning</li>
+                    <li><strong>In append mode:</strong> pointer starts at the end</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-question-circle"></i>
+                    2. tell() → Where am I?
+                </h3>
+                
+                <div class="content-text">
+                    <code>tell()</code> returns the current byte position of the file pointer.
+                </div>
+
+                <div class="code-block">with open("sample.txt", "r") as f:
+    print(f.tell())  # 0 — start of file
+    f.read(5)
+    print(f.tell())  # 5 — after reading 5 characters</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-arrows-alt"></i>
+                    3. seek() → Move the pointer
+                </h3>
+                
+                <div class="content-text">
+                    <code>seek(offset, whence)</code> moves the pointer to a new position.
+                </div>
+
+                <ul class="feature-list">
+                    <li><strong>offset:</strong> number of bytes to move</li>
+                    <li><strong>whence:</strong>
+                        <ul style="margin-left: 20px; list-style-type: disc;">
+                            <li>0 (default) → from beginning of file</li>
+                            <li>1 → from current position</li>
+                            <li>2 → from end of file</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="code-block">with open("sample.txt", "r") as f:
+    f.seek(10)      # Move to 10th byte from start
+    print(f.read(5))</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-edit"></i>
+                    4. Editing a File in the Middle
+                </h3>
+                
+                <div class="content-text">
+                    Without seek(), writing always happens at start (w) or end (a).
+                    With seek(), you can overwrite only specific parts:
+                </div>
+
+                <div class="code-block">with open("sample.txt", "r+") as f:
+    f.seek(6)              # Move to 7th byte
+    f.write("WORLD")       # Overwrite from that point</div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        Example
+                    </div>
+                    If sample.txt contained: <code>HELLO PYTHON</code><br>
+                    After running, it becomes: <code>HELLO WORLDON</code><br>
+                    (We overwrote " PYTH" with "WORLD" — careful, it doesn't insert!)
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-arrow-up"></i>
+                    5. Jumping from the End
+                </h3>
+                
+                <div class="content-text">
+                    You can move relative to the file's end (whence=2):
+                </div>
+
+                <div class="code-block">with open("sample.txt", "rb+") as f:
+    f.seek(-5, 2)          # Go 5 bytes before the end
+    print(f.read().decode())</div>
+
+                <div class="content-text">
+                    Useful for:
+                </div>
+
+                <ul class="feature-list">
+                    <li>Reading a file footer</li>
+                    <li>Modifying only the last few bytes</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-forward"></i>
+                    6. Skipping Bytes While Reading
+                </h3>
+                
+                <div class="code-block">with open("sample.txt", "r") as f:
+    while True:
+        chunk = f.read(4)
+        if not chunk:
+            break
+        print(chunk)
+        f.seek(2, 1)   # Skip 2 bytes after reading each chunk</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-lightbulb"></i>
+                    7. Practical Use Cases
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Log file processing:</strong> jump to the last N lines without reading the whole file</li>
+                    <li><strong>File repair:</strong> replace damaged sections only</li>
+                    <li><strong>Custom file formats:</strong> skip headers/metadata and jump directly to data</li>
+                    <li><strong>Resume downloads:</strong> start writing from where download stopped</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Advanced Techniques -->
+        <section id="advanced-techniques" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-rocket"></i>
+                13. Efficient tail (last N lines) Reader
+            </h2>
+            
+            <div class="content-text">
+                Here's a practical, production-style tail reader that doesn't load the whole file. It jumps from the end and reads in chunks until it has enough newlines.
+            </div>
+
+            <div class="code-block">from typing import List
+
+def tail(path: str, n: int = 10, chunk_size: int = 4096, encoding: str = "utf-8") -> List[str]:
+    """
+    Return the last n lines of a text file efficiently.
+    Reads from the end in binary, accumulates just enough bytes, then decodes once.
+    """
+    if n <= 0:
+        return []
+
+    with open(path, "rb") as f:
+        f.seek(0, 2)                 # go to end
+        file_end = f.tell()
+        pos = file_end
+        buf = b""
+
+        # keep pulling chunks from the end until we have n newlines (or we hit start)
+        while pos > 0 and buf.count(b"\n") < n + 1:
+            read_size = min(chunk_size, pos)
+            pos -= read_size
+            f.seek(pos)
+            buf = f.read(read_size) + buf
+
+        # split into lines (handles \n, \r\n, and files without trailing newline)
+        # splitlines() keeps things robust across platforms
+        lines = buf.splitlines()
+
+        # Take the last n lines, decode bytes -> str (lossy replace if mixed encoding)
+        last_n = lines[-n:] if n <= len(lines) else lines
+        return [bline.decode(encoding, errors="replace") for bline in last_n]</div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-check-circle"></i>
+                    Why this works well
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>O(k) read:</strong> where k ≈ bytes covering the last n lines (not the whole file)</li>
+                    <li><strong>Binary mode:</strong> avoids half-decoding multi-byte characters mid-chunk. Decodes at the end</li>
+                    <li><strong>splitlines():</strong> handles \n and \r\n, and files that don't end with a newline</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-play"></i>
+                    Example usage
+                </h3>
+                
+                <div class="code-block">for line in tail("app.log", n=10):
+    print(line)</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Common gotchas (and how the function avoids them)
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Mixed/unknown encoding:</strong> we decode once with errors="replace" so it never crashes</li>
+                    <li><strong>No trailing newline:</strong> splitlines() still returns the last line</li>
+                    <li><strong>Very long lines:</strong> we keep growing the buffer until we see enough \n; if a single line is gigantic, increase chunk_size</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-star"></i>
+                    Bonus: Tiny, simple fallback (OK for small files)
+                </h3>
+                
+                <div class="content-text">
+                    If the file isn't huge, this one-liner style is fine (but it reads the entire file):
+                </div>
+
+                <div class="code-block">from collections import deque
+
+def tail_simple(path: str, n: int = 10, encoding: str = "utf-8"):
+    with open(path, "r", encoding=encoding, errors="replace") as f:
+        return list(deque(f, maxlen=n))</div>
+            </div>
+        </section>
+
+        <!-- Common Pitfalls -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                12. Common Pitfalls
+            </h2>
+            
+            <ul class="feature-list">
+                <li><strong>Forgetting to close files:</strong> Memory leaks</li>
+                <li><strong>Writing in w mode when you meant a:</strong> Data loss</li>
+                <li><strong>Not using binary mode for non-text files:</strong> File corruption</li>
+                <li><strong>Reading after writing in w+ without seek(0):</strong> No output</li>
+            </ul>
+        </section>
+
+        <!-- Example Workflow -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-workflow"></i>
+                13. Example Workflow
+            </h2>
+            
+            <div class="code-block"># Create a file and write to it
+with open("notes.txt", "w") as f:
+    f.write("Line 1\n")
+    f.write("Line 2\n")
+
+# Append more data
+with open("notes.txt", "a") as f:
+    f.write("Line 3\n")
+
+# Read all data
+with open("notes.txt", "r") as f:
+    for line in f:
+        print(line.strip())</div>
+        </section>
+
+        <!-- Best Practices -->
+        <section id="best-practices" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                14. Extra Best Practices
+            </h2>
+            
+            <ul class="feature-list">
+                <li><strong>Always use with</strong> to avoid forgetting close()</li>
+                <li><strong>Use os.path.exists()</strong> before opening in r mode</li>
+                <li><strong>For large files,</strong> read in chunks (read(1024)) to save memory</li>
+                <li><strong>When handling CSVs,</strong> use Python's csv module</li>
+                <li><strong>Always specify encoding="utf-8"</strong> for text files</li>
+                <li><strong>Use binary mode</strong> for non-text files</li>
+                <li><strong>Stream with chunks,</strong> don't read() entire huge files</li>
+            </ul>
+        </section>
+
+        <!-- Enhanced Guide -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-book"></i>
+                File Handling in Python — Enhanced Guide Summary
+            </h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-question-circle"></i>
+                    1) Why file handling?
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Persistence:</strong> Keep data after program exits (disk vs RAM)</li>
+                    <li><strong>Scale:</strong> Input/output large datasets without typing into the console</li>
+                    <li><strong>Efficiency:</strong> Read only what you need, when you need it</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-file"></i>
+                    2) Files 101
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Text files (human-readable):</strong> .txt, .csv, .json, .py</li>
+                    <li><strong>Binary files (not human-readable):</strong> .jpg, .png, .mp3, .zip, .exe</li>
+                </ul>
+
+                <div class="content-text">
+                    A file is a named location on disk. Your program uses a file object (a "pointer/handler") to read/write.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-cog"></i>
+                    3) Opening files & modes
+                </h3>
+                
+                <div class="code-block">f = open(filename, mode)</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">Text modes</h4>
+                <ul class="feature-list">
+                    <li><strong>r:</strong> read (error if missing)</li>
+                    <li><strong>w:</strong> write (create or overwrite)</li>
+                    <li><strong>a:</strong> append (create or write at end)</li>
+                    <li><strong>r+:</strong> read & write (no create, no auto-erase)</li>
+                    <li><strong>w+:</strong> write & read (create or overwrite)</li>
+                    <li><strong>a+:</strong> append & read (create, pointer starts at end)</li>
+                </ul>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        Binary variants
+                    </div>
+                    Add 'b' → rb, wb, ab, rb+, wb+, ab+
+                </div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">Where's the pointer?</h4>
+                <ul class="feature-list">
+                    <li><strong>r, r+, w, w+:</strong> start</li>
+                    <li><strong>a, a+:</strong> end</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-shield-alt"></i>
+                    4) Always: context managers
+                </h3>
+                
+                <div class="content-text">
+                    Manual close() can be skipped accidentally (e.g., exceptions). Use with:
+                </div>
+
+                <div class="code-block">with open("data.txt", "r", encoding="utf-8") as f:
+    text = f.read()</div>
+
+                <div class="content-text">
+                    Multiple files:
+                </div>
+
+                <div class="code-block">with open("in.txt") as fin, open("out.txt", "w") as fout:
+    for line in fin:
+        fout.write(line.upper())</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-edit"></i>
+                    5) Reading & writing (text)
+                </h3>
+                
+                <div class="code-block"># Write (overwrite)
+with open("notes.txt", "w", encoding="utf-8") as f:
+    f.write("Line 1\n")
+    f.write("Line 2\n")
+
+# Append
+with open("notes.txt", "a", encoding="utf-8") as f:
+    f.write("Line 3\n")
+
+# Read
+with open("notes.txt", "r", encoding="utf-8") as f:
+    print(f.read())          # all
+    # f.readline()            # one line
+    # f.readlines()           # list of lines
+    # iterate: for line in f: ...</div>
+
+                <div class="warning-box">
+                    <div class="box-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important
+                    </div>
+                    In w+ and a+, if you write then want to read, call f.seek(0) first.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-random"></i>
+                    6) Random access: seek() and tell()
+                </h3>
+                
+                <div class="code-block">with open("sample.txt", "r+") as f:
+    print(f.tell())      # 0
+    f.seek(6)            # move to byte 6
+    f.write("WORLD")     # overwrite in place (does not insert)</div>
+
+                <div class="content-text">
+                    <code>seek(offset, whence)</code>
+                </div>
+
+                <ul class="feature-list">
+                    <li><strong>whence=0:</strong> start (default), 1 current, 2 end</li>
+                </ul>
+
+                <div class="content-text">
+                    Binary tailing example:
+                </div>
+
+                <div class="code-block">with open("sample.txt", "rb") as f:
+    f.seek(-10, 2)   # 10 bytes before end
+    tail_bytes = f.read()</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-file-code"></i>
+                    7) Binary files (images, etc.)
+                </h3>
+                
+                <div class="code-block"># Copy an image safely
+with open("img.jpg", "rb") as src, open("img_copy.jpg", "wb") as dst:
+    for chunk in iter(lambda: src.read(8192), b""):
+        dst.write(chunk)</div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        Why binary?
+                    </div>
+                    Avoids encoding/decoding; preserves exact bytes.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-folder"></i>
+                    8) Robust paths & existence
+                </h3>
+                
+                <div class="code-block">from pathlib import Path
+
+p = Path("data") / "input.txt"
+if p.exists():
+    with p.open("r", encoding="utf-8") as f:
+        print(f.readline())</div>
+
+                <div class="content-text">
+                    Use absolute paths for files outside your working directory.
+                </div>
+            </div>
+        </section>
+
+        <!-- Exam Questions -->
+        <section id="exam-questions" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-graduation-cap"></i>
+                Tricky Exam-Style Questions
+            </h2>
+            
+            <div class="exercise-section">
+                <h3 class="exercise-title">
+                    <i class="fas fa-fire"></i>
+                    🔥 Tricky Text File Handling Challenges
+                </h3>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">1. The Vanishing Data Mystery</h4>
+                    <div class="content-text">
+                        You have a file story.txt containing:
+                    </div>
+                    <div class="code-block">Once upon a time
+in a faraway land</div>
+                    <div class="content-text">
+                        <strong>Task:</strong> Write a program to add this line at the end: <code>they lived happily ever after</code> 
+                        …but without erasing any existing text.
+                    </div>
+                    <div class="warning-box">
+                        <div class="box-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Hidden traps
+                        </div>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>If you open with the wrong mode, you'll lose the story</li>
+                            <li>Do you need a newline before appending?</li>
+                            <li>Pointer position matters</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">2. Partial Overwrite Surgery</h4>
+                    <div class="content-text">
+                        You have a file quote.txt: <code>Knowledge is power.</code>
+                    </div>
+                    <div class="content-text">
+                        <strong>Task:</strong> Without creating a new file, change the text to: <code>Knowledge is Python.</code>
+                    </div>
+                    <div class="warning-box">
+                        <div class="box-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Hidden traps
+                        </div>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>If you open in append mode, nothing happens</li>
+                            <li>If you open in write mode, you lose everything</li>
+                            <li>You must move the file pointer to exactly the right spot</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">3. The Disappearing Read Problem</h4>
+                    <div class="content-text">
+                        You write this:
+                    </div>
+                    <div class="code-block">with open("data.txt", "w+") as f:
+    f.write("Line 1\nLine 2\nLine 3\n")
+    print(f.read())</div>
+                    <div class="content-text">
+                        <strong>Question:</strong> Why does this print nothing?<br>
+                        <strong>Challenge:</strong> Fix it without reopening the file.
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">4. The Reverse Line Reader</h4>
+                    <div class="content-text">
+                        Write a program to read a file lines.txt and print its lines in reverse order (last line first) without loading the whole file into memory at once.
+                    </div>
+                    <div class="warning-box">
+                        <div class="box-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Hidden traps
+                        </div>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>readlines() loads entire file (forbidden here)</li>
+                            <li>You must use pointer tricks (seek()) or chunk reading</li>
+                            <li>Beware of trailing newline at EOF</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">5. The Sneaky Mode Swap</h4>
+                    <div class="content-text">
+                        You have:
+                    </div>
+                    <div class="code-block">with open("mystery.txt", "r+") as f:
+    f.write("HELLO")
+    print(f.read())</div>
+                    <div class="content-text">
+                        The file originally had: <code>abcdefghij</code>
+                    </div>
+                    <div class="content-text">
+                        <strong>Question:</strong> What gets printed? Why?<br>
+                        <strong>Follow-up:</strong> Modify code so that it prints the entire final file content without reopening.
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">6. The "Double Append" Puzzle</h4>
+                    <div class="content-text">
+                        Append two lines to log.txt:
+                    </div>
+                    <div class="code-block">[INFO] First message
+[INFO] Second message</div>
+                    <div class="content-text">
+                        …but do it in such a way that after writing the first line, you read the whole file before writing the second — all in the same with block.
+                    </div>
+                    <div class="warning-box">
+                        <div class="box-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Hidden traps
+                        </div>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>In append mode, pointer starts at end</li>
+                            <li>If you try to read right after writing, you'll see nothing unless…</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">7. Selective Line Replacement</h4>
+                    <div class="content-text">
+                        In tasks.txt, find the line that says: <code>Task 3: Pending</code>
+                        …and replace it with: <code>Task 3: Done</code>
+                        without touching other lines.
+                    </div>
+                    <div class="warning-box">
+                        <div class="box-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Hidden traps
+                        </div>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>Text files have no true "insert" — overwriting can cause leftover characters</li>
+                            <li>You may need to rewrite the whole file from scratch in memory</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <h3 class="exercise-title">
+                    <i class="fas fa-brain"></i>
+                    Practice Exercises
+                </h3>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">A. Text basics</h4>
+                    <ul class="exercise-list">
+                        <li>Create notes.txt with three lines using w</li>
+                        <li>Append two more lines using a</li>
+                        <li>Read back and print line numbers (1: ...) as you go</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">B. r+ overwrite</h4>
+                    <ul class="exercise-list">
+                        <li>File contains: HELLO PYTHON</li>
+                        <li>Overwrite starting at byte 6 with WORLD</li>
+                        <li>Print final file content and explain why it looks the way it does</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">C. Binary chunking</h4>
+                    <ul class="exercise-list">
+                        <li>Copy a large file using 16 KB chunks</li>
+                        <li>Measure how many chunks were written</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">D. Tail utility</h4>
+                    <ul class="exercise-list">
+                        <li>Implement tail("app.log", 25) and compare its output to the last 25 lines produced by a simple full-read</li>
+                        <li>Time both approaches on a large file</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">E. Safe read after write</h4>
+                    <ul class="exercise-list">
+                        <li>Using w+, write 3 lines, then read them without reopening (remember seek(0)!)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="exercise-section">
+                <h3 class="exercise-title">
+                    <i class="fas fa-chart-line"></i>
+                    When to choose which mode (mental model)
+                </h3>
+
+                <ul class="feature-list">
+                    <li><strong>Only reading:</strong> r / rb</li>
+                    <li><strong>Create new or wipe old:</strong> w / wb (dangerous—double-check!)</li>
+                    <li><strong>Add to end:</strong> a / ab</li>
+                    <li><strong>Read & edit without wiping:</strong> r+ / rb+</li>
+                    <li><strong>Write then read (fresh file):</strong> w+ / wb+</li>
+                    <li><strong>Append then read:</strong> a+ / ab+ (use seek(0) to read from start)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Quick Reference -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-bookmark"></i>
+                Quick Reference (Cheatsheet)
+            </h2>
+            
+            <div class="code-block"># Open
+with open("file.txt", "r", encoding="utf-8") as f: ...
+
+# Modes
+# r, w, a, r+, w+, a+  (+ 'b' for binary)
+
+# Read
+f.read()           # all
+f.read(n)          # n chars/bytes
+f.readline()       # next line
+for line in f: ... # stream lines
+
+# Write / Append
+f.write("text\n")
+
+# Pointer
+f.tell()
+f.seek(offset, whence=0)   # 0=start, 1=current, 2=end</div>
+        </section>
+    </div>
+
+    <!-- Scroll to top button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme from localStorage
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Progress tracking
+        function trackProgress() {
+            let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            if (!visitedPages.includes('file-handling.html')) {
+                visitedPages.push('file-handling.html');
+                localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            trackProgress();
+        });
+    </script>
+</body>
+</html>
