@@ -1764,6 +1764,222 @@ python -c "from enhanced_solution import update_location_enhanced as u; u(90, ov
 
             <div class="subsection">
                 <h3 class="subsection-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Enhanced Solution 3 (Maximum Robustness)
+                </h3>
+                
+                <div class="content-text">
+                    This version adds comprehensive input validation, better error handling, and type conversion capabilities:
+                </div>
+
+                <div class="code-block"># ENHANCED SOLUTION 3 (safer, more robust; still txt-only and beginner-friendly)
+# Enhancements:
+# - Header discovery: finds StudentID and Location by name (no hard-coded index)
+# - Treats blank or 'NA' (case-insensitive) as missing
+# - Writes to a clean output file (does not overwrite the input during processing)
+# - Optional overwrite mode
+# - Optional dry-run (simulate) mode
+# - Clear summary of updates vs unchanged rows
+# - Batch mode to update multiple IDs in one pass
+# - Optional simple mapping override via string (e.g., "1:Mangalore,2:Kolkata,3:Chennai,4:Mumbai,5:NA")
+# - Comprehensive input validation and error handling
+# - Automatic type conversion for p_sid parameter
+
+LOCATION_MAP_DEFAULT = {1: "Mangalore", 2: "Kolkata", 3: "Chennai", 4: "Mumbai", 5: "NA"}
+
+
+def check_studentid(p_sid):
+    if 81 <= p_sid <= 85:
+        return 1
+    elif 86 <= p_sid <= 90:
+        return 2
+    elif 91 <= p_sid <= 95:
+        return 3
+    elif 96 <= p_sid <= 100:
+        return 4
+    else:
+        return 5
+
+
+def _normalize_header(name):
+    return name.strip().lower().replace(" ", "").replace("_", "")
+
+
+def parse_mapping_str(mapping_str):
+    """
+    Parse a simple mapping string like:
+        "1:Mangalore,2:Kolkata,3:Chennai,4:Mumbai,5:NA"
+    Returns a dict {1:..., 2:..., ...}. If None/empty, returns None.
+    """
+    if not mapping_str:
+        return None
+    result = {}
+    for pair in mapping_str.split(","):
+        if ":" not in pair:
+            continue
+        k, v = pair.split(":", 1)
+        k = k.strip()
+        v = v.strip()
+        if not k:
+            continue
+        try:
+            result[int(k)] = v
+        except ValueError:
+            raise ValueError("Mapping keys must be integers (1..5)")
+    return result or None
+
+
+def update_location_enhanced(
+    p_sid,
+    in_file="StudentData5.txt",
+    out_file="StudentData5_clean.txt",
+    overwrite=False,
+    simulate=False,
+    mapping_override=None,  # string like "1:Mangalore,2:Kolkata,3:Chennai,4:Mumbai,5:NA"
+):
+    # Input validation for p_sid
+    if not isinstance(p_sid, int):
+        try:
+            p_sid = int(p_sid)
+        except (ValueError, TypeError):
+            print(f"Error: p_sid must be an integer, got {type(p_sid).__name__}: {p_sid}")
+            return
+    
+    if p_sid < 0:
+        print(f"Error: p_sid must be positive, got {p_sid}")
+        return
+    
+    # Choose mapping
+    custom_map = parse_mapping_str(mapping_override)
+    LOCATION_MAP = custom_map if custom_map else LOCATION_MAP_DEFAULT
+
+    # File existence check with proper error handling
+    try:
+        with open(in_file, "r", encoding="utf-8") as f:
+            lines = f.read().splitlines()
+    except FileNotFoundError:
+        print(f"Error: Input file '{in_file}' not found")
+        return
+    except PermissionError:
+        print(f"Error: Permission denied to read '{in_file}'")
+        return
+    except Exception as e:
+        print(f"Error reading file '{in_file}': {e}")
+        return
+    
+    if not lines:
+        print("Error: Empty file"); return
+
+    # Header discovery
+    headers = [h.strip() for h in lines[0].split(",")]
+    norm2real = {_normalize_header(h): h for h in headers}
+    if "studentid" not in norm2real or "location" not in norm2real:
+        print("Header must contain 'StudentID' and 'Location'"); return
+
+    sid_idx = headers.index(norm2real["studentid"])
+    loc_idx = headers.index(norm2real["location"])
+
+    # Process rows
+    out_lines = [",".join(headers)]
+    found = False
+    updated = 0
+    unchanged = 0
+    invalid = 0
+
+    for raw in lines[1:]:
+        parts = [p.strip() for p in raw.split(",")]
+        if len(parts) < len(headers):
+            parts += [""] * (len(headers) - len(parts))
+
+        # Skip non-integer IDs safely
+        try:
+            sid_val = int(parts[sid_idx])
+        except ValueError:
+            invalid += 1
+            out_lines.append(",".join(parts))
+            continue
+
+        if sid_val == p_sid:
+            found = True
+            current = parts[loc_idx].strip()
+            is_missing = (current == "" or current.lower() == "na")
+
+            if overwrite or is_missing:
+                target_loc = LOCATION_MAP.get(check_studentid(p_sid), "NA")
+                if current != target_loc:
+                    parts[loc_idx] = target_loc
+                    updated += 1
+                    print(f"[CHANGE] {p_sid}: '{current or '(blank)'}' -> '{target_loc}'")
+                else:
+                    unchanged += 1
+                    print("Change not required for Location")
+            else:
+                unchanged += 1
+                print("Change not required for Location")
+
+        out_lines.append(",".join(parts))
+
+    # Write output
+    if simulate:
+        print("\n[SIMULATION] No file written.")
+    else:
+        try:
+            with open(out_file, "w", encoding="utf-8") as f:
+                f.write("\n".join(out_lines))
+            print(f"\nWrote updates to: {out_file}")
+        except PermissionError:
+            print(f"Error: Permission denied to write '{out_file}'")
+            return
+        except Exception as e:
+            print(f"Error writing file '{out_file}': {e}")
+            return
+
+    if not found:
+        print(f"Student with ID {p_sid} not found")
+
+    print(f"Summary: updated={updated}, unchanged={unchanged}, invalid_rows={invalid}")
+
+
+# ---- Batch helper (optional) ----
+
+def update_locations_batch(psids, **kwargs):
+    for sid in psids:
+        update_location_enhanced(sid, **kwargs)</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-vial"></i>
+                    Testing Enhanced Solution 3
+                </h3>
+                
+                <div class="content-text">
+                    Here are comprehensive test cases to validate the enhanced error handling:
+                </div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">Test Invalid Inputs:</h4>
+                <div class="code-block">python -c "from enhanced_solution import *; print('Test 1: Invalid p_sid (string):'); update_location_enhanced('abc'); print('\nTest 2: Negative p_sid:'); update_location_enhanced(-5); print('\nTest 3: Non-existent file:'); update_location_enhanced(82, in_file='nonexistent.txt'); print('\nTest 4: Valid case with simulation:'); update_location_enhanced(85, simulate=True)"</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">Test Type Conversion:</h4>
+                <div class="code-block">python -c "from enhanced_solution import *; print('Test: String number that can be converted:'); update_location_enhanced('86', simulate=True)"</div>
+            </div>
+
+            <div class="warning-box">
+                <div class="box-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    New Error Handling Features in Enhanced Solution 3
+                </div>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li><strong>Input Validation:</strong> Validates p_sid parameter type and value</li>
+                    <li><strong>Type Conversion:</strong> Automatically converts string numbers to integers</li>
+                    <li><strong>File Error Handling:</strong> Catches FileNotFoundError, PermissionError, and other exceptions</li>
+                    <li><strong>Comprehensive Error Messages:</strong> Clear, descriptive error messages for debugging</li>
+                    <li><strong>Graceful Failure:</strong> Functions return safely on errors without crashing</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
                     <i class="fas fa-lightbulb"></i>
                     Key File Handling Concepts Demonstrated
                 </h3>
@@ -1775,6 +1991,8 @@ python -c "from enhanced_solution import update_location_enhanced as u; u(90, ov
                     <li><strong>Error Handling:</strong> Graceful handling of file and data errors</li>
                     <li><strong>Data Validation:</strong> Checking for valid data before processing</li>
                     <li><strong>Backup Strategy:</strong> Creating clean output files instead of overwriting originals</li>
+                    <li><strong>Exception Handling:</strong> Try-catch blocks for robust error management</li>
+                    <li><strong>Type Checking:</strong> Runtime validation and conversion of input parameters</li>
                 </ul>
             </div>
         </section>
