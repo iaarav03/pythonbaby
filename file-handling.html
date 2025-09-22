@@ -493,6 +493,10 @@
                     <i class="fas fa-star"></i>
                     Best Practices
                 </a>
+                <a href="#student-location-system" class="nav-item">
+                    <i class="fas fa-user-graduate"></i>
+                    Student Location System
+                </a>
                 <a href="#exam-questions" class="nav-item">
                     <i class="fas fa-graduation-cap"></i>
                     Exam Questions
@@ -1463,6 +1467,315 @@ if p.exists():
                 <div class="content-text">
                     Use absolute paths for files outside your working directory.
                 </div>
+            </div>
+        </section>
+
+        <!-- Student Location Update System -->
+        <section id="student-location-system" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-user-graduate"></i>
+                Student Location Update System
+            </h2>
+            
+            <div class="content-text">
+                This section demonstrates two approaches to updating student location data based on Student ID ranges - an enhanced robust solution and a simpler normal solution. Both examples showcase practical file handling techniques.
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-rocket"></i>
+                    Enhanced Solution (Safer, More Robust)
+                </h3>
+                
+                <div class="content-text">
+                    This enhanced version includes header discovery, better error handling, batch processing, and simulation mode:
+                </div>
+
+                <div class="code-block"># ENHANCED SOLUTION (safer, more robust; still txt-only and beginner-friendly)
+# Enhancements:
+# - Header discovery: finds StudentID and Location by name (no hard-coded index)
+# - Treats blank or 'NA' (case-insensitive) as missing
+# - Writes to a clean output file (does not overwrite the input during processing)
+# - Optional overwrite mode
+# - Optional dry-run (simulate) mode
+# - Clear summary of updates vs unchanged rows
+# - Batch mode to update multiple IDs in one pass
+# - Optional simple mapping override via string (e.g., "1:Mangalore,2:Kolkata,3:Chennai,4:Mumbai,5:NA")
+
+LOCATION_MAP_DEFAULT = {1: "Mangalore", 2: "Kolkata", 3: "Chennai", 4: "Mumbai", 5: "NA"}
+
+
+def check_studentid(p_sid):
+    if 81 <= p_sid <= 85:
+        return 1
+    elif 86 <= p_sid <= 90:
+        return 2
+    elif 91 <= p_sid <= 95:
+        return 3
+    elif 96 <= p_sid <= 100:
+        return 4
+    else:
+        return 5
+
+
+def _normalize_header(name):
+    return name.strip().lower().replace(" ", "").replace("_", "")
+
+
+def parse_mapping_str(mapping_str):
+    """
+    Parse a simple mapping string like:
+        "1:Mangalore,2:Kolkata,3:Chennai,4:Mumbai,5:NA"
+    Returns a dict {1:..., 2:..., ...}. If None/empty, returns None.
+    """
+    if not mapping_str:
+        return None
+    result = {}
+    for pair in mapping_str.split(","):
+        if ":" not in pair:
+            continue
+        k, v = pair.split(":", 1)
+        k = k.strip()
+        v = v.strip()
+        if not k:
+            continue
+        try:
+            result[int(k)] = v
+        except ValueError:
+            raise ValueError("Mapping keys must be integers (1..5)")
+    return result or None
+
+
+def update_location_enhanced(
+    p_sid,
+    in_file="StudentData5.txt",
+    out_file="StudentData5_clean.txt",
+    overwrite=False,
+    simulate=False,
+    mapping_override=None,  # string like "1:Mangalore,2:Kolkata,3:Chennai,4:Mumbai,5:NA"
+):
+    # Choose mapping
+    custom_map = parse_mapping_str(mapping_override)
+    LOCATION_MAP = custom_map if custom_map else LOCATION_MAP_DEFAULT
+
+    # Read all lines
+    with open(in_file, "r", encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    if not lines:
+        print("Empty file"); return
+
+    # Header discovery
+    headers = [h.strip() for h in lines[0].split(",")]
+    norm2real = {_normalize_header(h): h for h in headers}
+    if "studentid" not in norm2real or "location" not in norm2real:
+        print("Header must contain 'StudentID' and 'Location'"); return
+
+    sid_idx = headers.index(norm2real["studentid"])
+    loc_idx = headers.index(norm2real["location"])
+
+    # Process rows
+    out_lines = [",".join(headers)]
+    found = False
+    updated = 0
+    unchanged = 0
+    invalid = 0
+
+    for raw in lines[1:]:
+        parts = [p.strip() for p in raw.split(",")]
+        if len(parts) < len(headers):
+            parts += [""] * (len(headers) - len(parts))
+
+        # Skip non-integer IDs safely
+        try:
+            sid_val = int(parts[sid_idx])
+        except ValueError:
+            invalid += 1
+            out_lines.append(",".join(parts))
+            continue
+
+        if sid_val == p_sid:
+            found = True
+            current = parts[loc_idx].strip()
+            is_missing = (current == "" or current.lower() == "na")
+
+            if overwrite or is_missing:
+                target_loc = LOCATION_MAP.get(check_studentid(p_sid), "NA")
+                if current != target_loc:
+                    parts[loc_idx] = target_loc
+                    updated += 1
+                    print(f"[CHANGE] {p_sid}: '{current or '(blank)'}' -> '{target_loc}'")
+                else:
+                    unchanged += 1
+                    print("Change not required for Location")
+            else:
+                unchanged += 1
+                print("Change not required for Location")
+
+        out_lines.append(",".join(parts))
+
+    # Write output
+    if simulate:
+        print("\n[SIMULATION] No file written.")
+    else:
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(out_lines))
+        print(f"\nWrote updates to: {out_file}")
+
+    if not found:
+        print(f"Student with ID {p_sid} not found")
+
+    print(f"Summary: updated={updated}, unchanged={unchanged}, invalid_rows={invalid}")
+
+
+# ---- Batch helper (optional) ----
+
+def update_locations_batch(psids, **kwargs):
+    for sid in psids:
+        update_location_enhanced(sid, **kwargs)</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-code"></i>
+                    Normal Solution (Simple Approach)
+                </h3>
+                
+                <div class="content-text">
+                    This is the simpler, more straightforward implementation:
+                </div>
+
+                <div class="code-block">def check_studentid(p_sid):
+    if(p_sid>=81 and p_sid<=85):
+        return 1
+    elif(p_sid>=86 and p_sid<=90):
+        return 2
+    elif(p_sid>=91 and p_sid<=95):
+        return 3
+    elif(p_sid>=96 and p_sid<=100):
+        return 4
+    else:
+        return 5
+
+def update_location(p_sid):
+    # Location mapping based on check_studentid return values
+    location_mapping = {
+        1: "Mangalore",
+        2: "Kolkata", 
+        3: "Chennai",
+        4: "Mumbai",
+        5: "NA"
+    }
+    
+    # Read the text file
+    lines = []
+    with open('StudentData5.txt', 'r') as file:
+        lines = file.readlines()
+    
+    # Find the student with the given ID
+    student_found = False
+    for i, line in enumerate(lines):
+        if i == 0:  # Skip header line
+            continue
+            
+        # Split the line by comma to get individual fields
+        fields = line.strip().split(',')
+        if len(fields) >= 15:  # Ensure we have all fields including Location
+            student_id = int(fields[0])
+            
+            if student_id == p_sid:
+                student_found = True
+                location = fields[14]  # Location is the 15th field (index 14)
+                
+                # Check if location is present (not empty)
+                if location.strip() == '':
+                    # Location is not present, need to update
+                    result = check_studentid(p_sid)
+                    new_location = location_mapping[result]
+                    
+                    # Update the location in the line
+                    fields[14] = new_location
+                    lines[i] = ','.join(fields) + '\n'
+                    
+                    # Write back to file
+                    with open('StudentData5.txt', 'w') as file:
+                        file.writelines(lines)
+                    
+                    print(f"Location for {p_sid} updated as {new_location} successfully")
+                else:
+                    # Location is already present
+                    print("Change not required for Location")
+                break
+    
+    if not student_found:
+        print(f"Student with ID {p_sid} not found")
+
+# Example usage:
+# update_location(82)  # This will update location for student ID 82 if not present
+# update_location(81)  # This will show "Change not required" since location already exists</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-play"></i>
+                    How to Run the Enhanced Solution
+                </h3>
+                
+                <div class="content-text">
+                    Here are copy-paste examples for running the enhanced solution:
+                </div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">Preview Only (No File Write):</h4>
+                <div class="code-block">python -c "from enhanced_solution import update_location_enhanced as u; u(90, simulate=True)"
+python -c "from enhanced_solution import update_location_enhanced as u; u(90, simulate=True, overwrite=True)"</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">Write to Clean File (StudentData5_clean.txt):</h4>
+                <div class="code-block">python -c "from enhanced_solution import update_location_enhanced as u; u(90)"
+python -c "from enhanced_solution import update_location_enhanced as u; u(90, overwrite=True)"</div>
+            </div>
+
+            <div class="info-box">
+                <div class="box-title">
+                    <i class="fas fa-info-circle"></i>
+                    Key Features of Enhanced Solution
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Header Discovery:</strong> Automatically finds StudentID and Location columns by name</li>
+                    <li><strong>Safe Processing:</strong> Writes to a separate output file, preserving original data</li>
+                    <li><strong>Simulation Mode:</strong> Test changes without writing files</li>
+                    <li><strong>Batch Processing:</strong> Update multiple student IDs at once</li>
+                    <li><strong>Comprehensive Logging:</strong> Detailed summary of all operations</li>
+                    <li><strong>Error Handling:</strong> Gracefully handles malformed data</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <div class="box-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Location Mapping Rules
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Student ID 81-85:</strong> Mangalore</li>
+                    <li><strong>Student ID 86-90:</strong> Kolkata</li>
+                    <li><strong>Student ID 91-95:</strong> Chennai</li>
+                    <li><strong>Student ID 96-100:</strong> Mumbai</li>
+                    <li><strong>All Other IDs:</strong> NA</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Key File Handling Concepts Demonstrated
+                </h3>
+                
+                <ul class="feature-list">
+                    <li><strong>Context Managers:</strong> Using <code>with open()</code> for safe file handling</li>
+                    <li><strong>File Modes:</strong> Reading with 'r' and writing with 'w' modes</li>
+                    <li><strong>Text Processing:</strong> Splitting CSV data and manipulating strings</li>
+                    <li><strong>Error Handling:</strong> Graceful handling of file and data errors</li>
+                    <li><strong>Data Validation:</strong> Checking for valid data before processing</li>
+                    <li><strong>Backup Strategy:</strong> Creating clean output files instead of overwriting originals</li>
+                </ul>
             </div>
         </section>
 
