@@ -497,6 +497,10 @@
                     <i class="fas fa-user-graduate"></i>
                     Student Location System
                 </a>
+                <a href="#unix-part" class="nav-item">
+                    <i class="fas fa-terminal"></i>
+                    Unix Part
+                </a>
                 <a href="#exam-questions" class="nav-item">
                     <i class="fas fa-graduation-cap"></i>
                     Exam Questions
@@ -1994,6 +1998,255 @@ def update_locations_batch(psids, **kwargs):
                     <li><strong>Exception Handling:</strong> Try-catch blocks for robust error management</li>
                     <li><strong>Type Checking:</strong> Runtime validation and conversion of input parameters</li>
                 </ul>
+            </div>
+        </section>
+
+        <!-- Unix Part -->
+        <section id="unix-part" class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-terminal"></i>
+                Unix Part - Bash Scripts for Data Processing
+            </h2>
+            
+            <div class="content-text">
+                This section demonstrates how to process student data using Unix/Bash scripts. These scripts show file processing, data manipulation, and statistical calculations using shell scripting.
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-edit"></i>
+                    Script 1: Data Correction and Cleaning
+                </h3>
+                
+                <div class="content-text">
+                    This script corrects date formats and fills missing location data:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-StudentData2.txt}"
+OUTPUT="${2:-ModifiedData.txt}"
+
+echo "[Q1] Writing corrected file to: $OUTPUT"
+
+first=1
+: > "$OUTPUT"  # truncate
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  if [ $first -eq 1 ]; then
+    echo "$id,$age,$dob,$gender,$socio,$school,$grade,$att,$gpa,$disc,$act,$parent,$grad,$drop,$loc" >> "$OUTPUT"
+    first=0
+    continue
+  fi
+
+  # normalize delimiter in DOB to '-'
+  dob="${dob//\//-}"
+
+  # split date
+  dd=""; mm=""; yy=""
+  IFS="-" read -r dd mm yy <<< "$dob"
+
+  # if year has 2 digits, prefix '20'
+  if [ -n "${yy:-}" ] && [ "${#yy}" -eq 2 ]; then
+    yy="20${yy}"
+  fi
+  if [ -n "$dd" ] && [ -n "$mm" ] && [ -n "$yy" ]; then
+    dob_fixed="${dd}-${mm}-${yy}"
+  else
+    dob_fixed="$dob"
+  fi
+
+  # fill missing location
+  if [ -z "${loc:-}" ]; then
+    loc="Delhi"
+  fi
+
+  echo "$id,$age,$dob_fixed,$gender,$socio,$school,$grade,$att,$gpa,$disc,$act,$parent,$grad,$drop,$loc" >> "$OUTPUT"
+done < "$INPUT"
+
+echo "Done."</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Script 2: Average Discipline by Parental Care
+                </h3>
+                
+                <div class="content-text">
+                    Calculate average discipline incidents grouped by parental care level:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A SUM
+declare -A CNT
+
+# integer average (use bc for decimal if needed)
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  SUM["$parent"]=$(( ${SUM["$parent"]:-0} + ${disc:-0} ))
+  CNT["$parent"]=$(( ${CNT["$parent"]:-0} + 1 ))
+done < "$INPUT"
+
+# print sorted by parental care
+for k in "${!CNT[@]}"; do
+  # decimal average:
+  avg=$(echo "scale=2; ${SUM[$k]} / ${CNT[$k]}" | bc)
+  printf "%s -> Average Discipline = %s\n" "$k" "$avg"
+done | sort</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-school"></i>
+                    Script 3: Total Incidents by School
+                </h3>
+                
+                <div class="content-text">
+                    Calculate total discipline incidents for each school:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A TOTAL
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  TOTAL["$school"]=$(( ${TOTAL["$school"]:-0} + ${disc:-0} ))
+done < "$INPUT"
+
+for k in "${!TOTAL[@]}"; do
+  printf "%s -> Total Incidents = %s\n" "$k" "${TOTAL[$k]}"
+done | sort</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Script 4: Average GPA by Socio-Economic Status and Parental Care
+                </h3>
+                
+                <div class="content-text">
+                    Calculate average GPA grouped by socio-economic status and parental care combination:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A SUM
+declare -A CNT
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  key="${socio}-${parent}"
+  SUM["$key"]=$(echo "${SUM["$key"]:-0} + ${gpa:-0}" | bc)
+  CNT["$key"]=$(( ${CNT["$key"]:-0} + 1 ))
+done < "$INPUT"
+
+for k in "${!CNT[@]}"; do
+  avg=$(echo "scale=4; ${SUM[$k]} / ${CNT[$k]}" | bc)
+  printf "%s -> Avg GPA = %s\n" "$k" "$avg"
+done | sort</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Script 5: Dropout Rate by Location
+                </h3>
+                
+                <div class="content-text">
+                    Calculate dropout rates for each location with detailed statistics:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A TOTAL
+declare -A DROPS
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  TOTAL["$loc"]=$(( ${TOTAL["$loc"]:-0} + 1 ))
+  DROPS["$loc"]=$(( ${DROPS["$loc"]:-0} + ${drop:-0} ))
+done < "$INPUT"
+
+for k in "${!TOTAL[@]}"; do
+  rate=$(echo "scale=2; (${DROPS[$k]} / ${TOTAL[$k]}) * 100" | bc)
+  printf "%s -> Dropout Rate = %s%%  (dropped=%s / total=%s)\n" "$k" "$rate" "${DROPS[$k]}" "${TOTAL[$k]}"
+done | sort</div>
+            </div>
+
+            <div class="info-box">
+                <div class="box-title">
+                    <i class="fas fa-info-circle"></i>
+                    Key Bash Scripting Concepts Demonstrated
+                </div>
+                <ul class="feature-list">
+                    <li><strong>File Reading:</strong> Using <code>while read</code> loops to process CSV files line by line</li>
+                    <li><strong>Associative Arrays:</strong> Using <code>declare -A</code> for key-value data storage</li>
+                    <li><strong>String Manipulation:</strong> Pattern replacement with <code>${var//pattern/replacement}</code></li>
+                    <li><strong>Mathematical Operations:</strong> Using <code>bc</code> for decimal calculations</li>
+                    <li><strong>Parameter Expansion:</strong> Default values with <code>${var:-default}</code></li>
+                    <li><strong>Field Separation:</strong> Using <code>IFS</code> to split CSV fields</li>
+                    <li><strong>Conditional Logic:</strong> Testing string lengths and values</li>
+                    <li><strong>Output Formatting:</strong> Using <code>printf</code> for formatted output</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <div class="box-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Usage Instructions
+                </div>
+                <div class="content-text">
+                    To run these scripts:
+                </div>
+                <ol style="margin: 10px 0; padding-left: 20px;">
+                    <li>Save each script to a file (e.g., <code>script1.sh</code>, <code>script2.sh</code>, etc.)</li>
+                    <li>Make them executable: <code>chmod +x script1.sh</code></li>
+                    <li>Run with: <code>./script1.sh [input_file] [output_file]</code></li>
+                    <li>For scripts 2-5: <code>./script2.sh [input_file]</code></li>
+                </ol>
+                <div class="content-text">
+                    <strong>Note:</strong> Ensure you have <code>bc</code> calculator installed for decimal arithmetic.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-cogs"></i>
+                    Script Workflow
+                </h3>
+                
+                <div class="content-text">
+                    These scripts work together in sequence:
+                </div>
+                
+                <ol style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Script 1:</strong> Cleans and corrects the raw data (fixes dates, fills missing locations)</li>
+                    <li><strong>Script 2:</strong> Analyzes discipline patterns by parental care level</li>
+                    <li><strong>Script 3:</strong> Summarizes discipline incidents by school</li>
+                    <li><strong>Script 4:</strong> Examines academic performance by socio-economic factors</li>
+                    <li><strong>Script 5:</strong> Calculates dropout rates by geographic location</li>
+                </ol>
             </div>
         </section>
 
