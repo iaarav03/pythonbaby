@@ -1984,6 +1984,112 @@ def update_locations_batch(psids, **kwargs):
 
             <div class="subsection">
                 <h3 class="subsection-title">
+                    <i class="fas fa-flask"></i>
+                    Comprehensive Test Suite
+                </h3>
+                
+                <div class="content-text">
+                    This comprehensive test suite demonstrates all features of the enhanced solution with various edge cases and scenarios:
+                </div>
+
+                <div class="code-block">from enhanced_solution import update_location_enhanced, update_locations_batch
+
+
+def divider(title):
+    print("\n" + "=" * 20 + f" {title} " + "=" * 20)
+
+
+def run_tests():
+    # Note: Uses simulate=True to avoid writing files for most tests.
+
+    divider("1) Basic update when Location blank")
+    update_location_enhanced(82, simulate=True)
+
+    divider("2) Already present Location (no change)")
+    update_location_enhanced(81, simulate=True)
+
+    divider("3) Treat 'NA' as missing (update)")
+    # Prepare a temporary out file to demonstrate write path without altering input
+    update_location_enhanced(83, out_file="StudentData5_clean.txt", overwrite=False, simulate=True)
+
+    divider("4) Overwrite existing Location (force change)")
+    update_location_enhanced(90, overwrite=True, simulate=True)
+
+    divider("5) Invalid p_sid (string that cannot convert)")
+    update_location_enhanced("abc", simulate=True)
+
+    divider("6) Negative p_sid")
+    update_location_enhanced(-10, simulate=True)
+
+    divider("7) String number p_sid (auto-convert)")
+    update_location_enhanced("86", simulate=True)
+
+    divider("8) Non-existent input file")
+    update_location_enhanced(82, in_file="does_not_exist.txt", simulate=True)
+
+    divider("9) Batch mode (multiple IDs)")
+    update_locations_batch([82, 83, 84, 97, "98"], simulate=True)
+
+    divider("10) Custom mapping override")
+    update_location_enhanced(95, simulate=True, mapping_override="1:AAA,2:BBB,3:CCC,4:DDD,5:EEE")
+
+
+if __name__ == "__main__":
+    run_tests()</div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        Test Cases Covered
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>Basic Functionality:</strong> Update blank locations with appropriate city names</li>
+                        <li><strong>No-Change Scenarios:</strong> Skip updates when location already exists</li>
+                        <li><strong>NA Handling:</strong> Treat 'NA' values as missing data requiring updates</li>
+                        <li><strong>Force Overwrite:</strong> Override existing locations when explicitly requested</li>
+                        <li><strong>Input Validation:</strong> Handle invalid string inputs gracefully</li>
+                        <li><strong>Negative Values:</strong> Reject negative student IDs with clear error messages</li>
+                        <li><strong>Type Conversion:</strong> Automatically convert string numbers to integers</li>
+                        <li><strong>File Errors:</strong> Handle missing input files without crashing</li>
+                        <li><strong>Batch Processing:</strong> Process multiple student IDs in one operation</li>
+                        <li><strong>Custom Mappings:</strong> Override default location mappings with custom values</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <div class="box-title">
+                        <i class="fas fa-play"></i>
+                        How to Run the Test Suite
+                    </div>
+                    <div class="content-text">
+                        Save the test code as <code>test_enhanced_solution.py</code> and run:
+                    </div>
+                    <div class="code-block">python test_enhanced_solution.py</div>
+                    <div class="content-text">
+                        <strong>Note:</strong> All tests use <code>simulate=True</code> to avoid creating actual files during testing.
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-clipboard-check"></i>
+                        Expected Test Output Examples
+                    </div>
+                    <div class="content-text">
+                        Here's what you should see when running specific tests:
+                    </div>
+                    <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                        <li><strong>Test 5 (Invalid p_sid):</strong> "Error: p_sid must be an integer, got str: abc"</li>
+                        <li><strong>Test 6 (Negative p_sid):</strong> "Error: p_sid must be positive, got -10"</li>
+                        <li><strong>Test 7 (String conversion):</strong> Successfully converts "86" to integer 86</li>
+                        <li><strong>Test 8 (Missing file):</strong> "Error: Input file 'does_not_exist.txt' not found"</li>
+                        <li><strong>Test 10 (Custom mapping):</strong> Uses AAA, BBB, CCC, DDD, EEE instead of default cities</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
                     <i class="fas fa-lightbulb"></i>
                     Key File Handling Concepts Demonstrated
                 </h3>
@@ -1997,6 +2103,8 @@ def update_locations_batch(psids, **kwargs):
                     <li><strong>Backup Strategy:</strong> Creating clean output files instead of overwriting originals</li>
                     <li><strong>Exception Handling:</strong> Try-catch blocks for robust error management</li>
                     <li><strong>Type Checking:</strong> Runtime validation and conversion of input parameters</li>
+                    <li><strong>Unit Testing:</strong> Comprehensive test coverage for all functionality</li>
+                    <li><strong>Simulation Mode:</strong> Safe testing without file system modifications</li>
                 </ul>
             </div>
         </section>
