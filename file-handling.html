@@ -2248,6 +2248,271 @@ done | sort</div>
                     <li><strong>Script 5:</strong> Calculates dropout rates by geographic location</li>
                 </ol>
             </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">
+                    <i class="fas fa-sync-alt"></i>
+                    Advanced Unix: Incremental Data Processing System
+                </h3>
+                
+                <div class="content-text">
+                    This advanced system demonstrates incremental data processing using bookmarks and state management. Instead of reprocessing the entire file each time, it only processes new rows that have been added since the last run.
+                </div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-info-circle"></i>
+                        System Components
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>inc_setup.sh:</strong> Initialize state (bookmark + totals file)</li>
+                        <li><strong>inc_q3_update.sh:</strong> Process only new rows since last run and update totals</li>
+                        <li><strong>inc_q3_show.sh:</strong> Pretty print the current totals (sorted)</li>
+                        <li><strong>inc_q3_reset.sh:</strong> Reset everything safely</li>
+                        <li><strong>inc_q3_recompute_full.sh:</strong> Recompute from scratch if file changed drastically</li>
+                    </ul>
+                </div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">1) inc_setup.sh — Initialize System (Run Once)</h4>
+                <div class="content-text">
+                    Initializes the checkpoint and an empty totals file:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+STATE_DIR="state"
+LAST_FILE="$STATE_DIR/last_line.txt"
+TOT_FILE="$STATE_DIR/q3_totals.csv"
+
+mkdir -p "$STATE_DIR"
+
+# Start with header counted as processed (line 1)
+echo "1" > "$LAST_FILE"
+
+# Initialize the persisted totals CSV if missing
+if [ ! -f "$TOT_FILE" ]; then
+  echo "SchoolType,TotalIncidents" > "$TOT_FILE"
+fi
+
+echo "Initialized:"
+echo "  - Bookmark: $LAST_FILE (set to line 1)"
+echo "  - Totals:   $TOT_FILE"</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">2) inc_q3_update.sh — Process New Data (Run When Data Grows)</h4>
+                <div class="content-text">
+                    Reads only new lines appended to ModifiedData.txt, updates totals per SchoolType, then advances the bookmark:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+STATE_DIR="state"
+LAST_FILE="$STATE_DIR/last_line.txt"
+TOT_FILE="$STATE_DIR/q3_totals.csv"
+
+# Safety checks
+[ -f "$INPUT" ]     || { echo "ERROR: $INPUT not found"; exit 2; }
+[ -f "$LAST_FILE" ] || { echo "ERROR: $LAST_FILE not found (run ./inc_setup.sh)"; exit 2; }
+[ -f "$TOT_FILE" ]  || { echo "ERROR: $TOT_FILE not found (run ./inc_setup.sh)"; exit 2; }
+
+# Get current bookmark and file line count
+last_line=$(cat "$LAST_FILE")
+total_lines=$(wc -l < "$INPUT")
+
+# If the file shrank or header missing, ask to reset
+if [ "$total_lines" -lt 1 ]; then
+  echo "ERROR: $INPUT seems empty or invalid."
+  exit 2
+fi
+if [ "$total_lines" -lt "$last_line" ]; then
+  echo "Detected file shrink/replace (total=$total_lines < last=$last_line)."
+  echo "Run ./inc_q3_reset.sh (or ./inc_q3_recompute_full.sh) to recover."
+  exit 3
+fi
+
+# No new rows? Nothing to do.
+if [ "$total_lines" -le "$last_line" ]; then
+  echo "No new rows. (bookmark=$last_line, total=$total_lines)"
+  exit 0
+fi
+
+echo "New rows to process: $(( total_lines - last_line ))"
+
+# Load existing totals into an associative array
+declare -A TOTAL
+first=1
+while IFS="," read -r stype total
+do
+  if [ $first -eq 1 ]; then first=0; continue; fi  # skip header in totals file
+  TOTAL["$stype"]="${total:-0}"
+done < "$TOT_FILE"
+
+# Process only the delta (skip already processed lines; header is line 1)
+tail -n +"$((last_line+1))" "$INPUT" | \
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  # Defensive defaults
+  school="${school:-Unknown}"
+  disc="${disc:-0}"
+
+  # Update running total per SchoolType (integer sum)
+  TOTAL["$school"]=$(( ${TOTAL["$school"]:-0} + disc ))
+done
+
+# Persist updated totals (sorted by SchoolType for readability)
+{
+  echo "SchoolType,TotalIncidents"
+  for k in "${!TOTAL[@]}"; do
+    printf "%s,%s\n" "$k" "${TOTAL[$k]}"
+  done | sort
+} > "$TOT_FILE"
+
+# Move bookmark to end of file
+echo "$total_lines" > "$LAST_FILE"
+
+echo "Updated:"
+echo "  - $TOT_FILE (totals refreshed)"
+echo "  - $LAST_FILE (bookmark -> line $total_lines)"</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">3) inc_q3_show.sh — Display Results</h4>
+                <div class="content-text">
+                    Shows the current totals sorted:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+TOT_FILE="${1:-state/q3_totals.csv}"
+[ -f "$TOT_FILE" ] || { echo "ERROR: $TOT_FILE not found"; exit 2; }
+
+echo "== Q3: Total Discipline Incidents by SchoolType =="
+tail -n +2 "$TOT_FILE" | sort | while IFS="," read -r stype total
+do
+  printf "%-10s -> %s\n" "$stype" "$total"
+done</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">4) inc_q3_reset.sh — Safe Reset</h4>
+                <div class="content-text">
+                    Resets bookmark and clears totals (keeps header):
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+STATE_DIR="state"
+LAST_FILE="$STATE_DIR/last_line.txt"
+TOT_FILE="$STATE_DIR/q3_totals.csv"
+
+mkdir -p "$STATE_DIR"
+echo "1" > "$LAST_FILE"
+echo "SchoolType,TotalIncidents" > "$TOT_FILE"
+
+echo "Reset done:"
+echo "  - $LAST_FILE set to 1"
+echo "  - $TOT_FILE cleared (header only)"</div>
+
+                <h4 style="color: var(--primary-color); margin: 20px 0 10px 0;">5) inc_q3_recompute_full.sh — Full Rebuild (Optional)</h4>
+                <div class="content-text">
+                    If your input file was replaced or got smaller, recompute all totals from scratch:
+                </div>
+
+                <div class="code-block">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+STATE_DIR="state"
+LAST_FILE="$STATE_DIR/last_line.txt"
+TOT_FILE="$STATE_DIR/q3_totals.csv"
+
+[ -f "$INPUT" ] || { echo "ERROR: $INPUT not found"; exit 2; }
+mkdir -p "$STATE_DIR"
+
+declare -A TOTAL
+
+# Skip header (line 1) and sum everything
+tail -n +2 "$INPUT" | while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  school="${school:-Unknown}"
+  disc="${disc:-0}"
+  TOTAL["$school"]=$(( ${TOTAL["$school"]:-0} + disc ))
+done
+
+# Write totals file
+{
+  echo "SchoolType,TotalIncidents"
+  for k in "${!TOTAL[@]}"; do
+    printf "%s,%s\n" "$k" "${TOTAL[$k]}"
+  done | sort
+} > "$TOT_FILE"
+
+# Bookmark to end
+total_lines=$(wc -l < "$INPUT")
+echo "$total_lines" > "$LAST_FILE"
+
+echo "Full recompute done:"
+echo "  - $TOT_FILE refreshed from scratch"
+echo "  - $LAST_FILE set to $total_lines"</div>
+
+                <div class="warning-box">
+                    <div class="box-title">
+                        <i class="fas fa-play"></i>
+                        Daily Usage Workflow
+                    </div>
+                    <div class="content-text">
+                        <strong>Once at the start:</strong>
+                    </div>
+                    <div class="code-block">chmod +x inc_*.sh
+./inc_setup.sh</div>
+                    
+                    <div class="content-text">
+                        <strong>Whenever ModifiedData.txt gets more rows:</strong>
+                    </div>
+                    <div class="code-block">./inc_q3_update.sh
+./inc_q3_show.sh</div>
+                    
+                    <div class="content-text">
+                        <strong>If the file got replaced/shrunk (CI/CD refresh, correction, etc.):</strong>
+                    </div>
+                    <div class="code-block">./inc_q3_recompute_full.sh   # or ./inc_q3_reset.sh then ./inc_q3_update.sh</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Advanced Concepts Demonstrated
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>State Management:</strong> Using bookmark files to track processing progress</li>
+                        <li><strong>Incremental Processing:</strong> Processing only new data since last run</li>
+                        <li><strong>Data Persistence:</strong> Maintaining running totals across script executions</li>
+                        <li><strong>Error Recovery:</strong> Detecting file changes and providing recovery options</li>
+                        <li><strong>Defensive Programming:</strong> Comprehensive error checking and safe defaults</li>
+                        <li><strong>File System Operations:</strong> Creating directories, managing multiple state files</li>
+                        <li><strong>Process Optimization:</strong> Using <code>tail -n +N</code> for efficient partial file reading</li>
+                        <li><strong>Data Integrity:</strong> Validating file consistency before processing</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <div class="box-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        Summary: Incremental Q3 (Total Incidents by SchoolType)
+                    </div>
+                    <div class="content-text">
+                        <strong>Task:</strong> Incremental Q3 (Total Incidents by SchoolType)<br>
+                        <strong>Steps:</strong>
+                    </div>
+                    <ol style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                        <li>Keep bookmark in <code>state/last_line.txt</code></li>
+                        <li>Read only new rows (<code>tail -n +N</code>); update per-SchoolType totals</li>
+                        <li>Persist totals to <code>state/q3_totals.csv</code> (sorted)</li>
+                        <li>Advance bookmark to current end of file</li>
+                    </ol>
+                </div>
+            </div>
         </section>
 
         <!-- Exam Questions -->
