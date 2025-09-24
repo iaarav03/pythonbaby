@@ -783,6 +783,29 @@
                     <i class="fas fa-arrow-right topic-arrow"></i>
                 </div>
             </a>
+
+            <a href="programming-questions.html" class="topic-card" data-keywords="programming questions python unix bash shell scripts challenges practice exercises solutions" data-difficulty="intermediate" data-category="practical">
+                <div class="topic-header">
+                    <div class="topic-icon">❓</div>
+                    <div>
+                        <div class="topic-title">Programming Questions</div>
+                        <div class="topic-subtitle">Challenge Bank</div>
+                    </div>
+                </div>
+                <div class="topic-description">
+                    Comprehensive collection of Python and Unix programming challenges with detailed solutions, covering data processing, file handling, and algorithmic problems.
+                </div>
+                <ul class="topic-features">
+                    <li>Python function challenges</li>
+                    <li>Unix shell script problems</li>
+                    <li>Data processing & analysis tasks</li>
+                    <li>Complete solutions with explanations</li>
+                </ul>
+                <div class="topic-meta">
+                    <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+                    <i class="fas fa-arrow-right topic-arrow"></i>
+                </div>
+            </a>
         </section>
 
         <footer class="footer">
@@ -898,7 +921,7 @@
         // Progress tracking (simulated)
         function updateProgress() {
             const visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
-            const totalPages = 9; // added modules-packages.html
+            const totalPages = 10; // added programming-questions.html
             const progress = (visitedPages.length / totalPages) * 100;
             
             const progressFill = document.getElementById('progressFill');

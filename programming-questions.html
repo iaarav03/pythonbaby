@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Questions - Python Learning Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd43b;
+            --accent-color: #306998;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --code-bg: #f8f9fa;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4a9eff;
+            --secondary-color: #ffd43b;
+            --accent-color: #66b3ff;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --code-bg: #1e1e1e;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-brand i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.1);
+        }
+
+        .theme-toggle {
+            background: rgba(55, 118, 171, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.8;
+            justify-content: center;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Content */
+        .content {
+            margin-top: 40px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subsection-title i {
+            color: var(--primary-color);
+        }
+
+        .content-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+            border-left: 4px solid var(--primary-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-block::before {
+            content: 'Code';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            background: rgba(55, 118, 171, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .python-code::before {
+            content: 'Python';
+        }
+
+        .bash-code::before {
+            content: 'Bash';
+        }
+
+        /* Info boxes */
+        .info-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+            background: rgba(55, 118, 171, 0.05);
+        }
+
+        .warning-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--warning-color);
+            background: rgba(243, 156, 18, 0.05);
+        }
+
+        .success-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--success-color);
+            background: rgba(39, 174, 96, 0.05);
+        }
+
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box .box-title {
+            color: var(--primary-color);
+        }
+
+        .warning-box .box-title {
+            color: var(--warning-color);
+        }
+
+        .success-box .box-title {
+            color: var(--success-color);
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            position: relative;
+            padding-left: 35px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .feature-list li::before {
+            content: '🐍';
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .bash-list li::before {
+            content: '🔧';
+        }
+
+        /* Question cards */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .question-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .question-number {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .question-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+            
+            .code-block {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">
+                <i class="fab fa-python"></i>
+                Python Learning Hub
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="file-handling.html">File Handling</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Programming Questions</span>
+                </div>
+                <h1>Programming Questions</h1>
+                <p>Comprehensive collection of Python and Unix programming challenges with solutions</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container">
+        <div class="content">
+            
+            <!-- Python Questions Section -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">🐍</div>
+                    Python Programming Questions
+                </h2>
+                
+                <div class="question-card">
+                    <span class="question-number">Python Q1</span>
+                    <h3 class="question-title">check_studentid Function</h3>
+                    
+                    <div class="content-text">
+                        Define a function to map StudentID ranges to buckets (1–5).
+                    </div>
+
+                    <div class="info-box">
+                        <div class="box-title">
+                            <i class="fas fa-tasks"></i>
+                            Requirements
+                        </div>
+                        <ul class="feature-list">
+                            <li>Handle ranges: 81–85→1, 86–90→2, 91–95→3, 96–100→4, others→5</li>
+                            <li>Return the correct bucket as an integer</li>
+                            <li>Test with few IDs to confirm boundary cases (85/86/90/91/95/96/100)</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-block python-code">def check_studentid(student_id):
+    """
+    Map StudentID ranges to buckets (1-5).
+    
+    Args:
+        student_id (int): Student ID to categorize
+        
+    Returns:
+        int: Bucket number (1-5)
+    """
+    if 81 <= student_id <= 85:
+        return 1
+    elif 86 <= student_id <= 90:
+        return 2
+    elif 91 <= student_id <= 95:
+        return 3
+    elif 96 <= student_id <= 100:
+        return 4
+    else:
+        return 5
+
+# Test boundary cases
+test_ids = [80, 81, 85, 86, 90, 91, 95, 96, 100, 101]
+for sid in test_ids:
+    bucket = check_studentid(sid)
+    print(f"Student ID {sid} → Bucket {bucket}")</div>
+                </div>
+
+                <div class="question-card">
+                    <span class="question-number">Python Q2</span>
+                    <h3 class="question-title">update_location Function</h3>
+                    
+                    <div class="content-text">
+                        Read StudentData5.txt, locate the row for the given StudentID, and update location if blank.
+                    </div>
+
+                    <div class="info-box">
+                        <div class="box-title">
+                            <i class="fas fa-tasks"></i>
+                            Requirements
+                        </div>
+                        <ul class="feature-list">
+                            <li>Read StudentData5.txt, locate the row for the given StudentID</li>
+                            <li>If Location is blank, call Q1 and map bucket→city (1:Mangalore … 5:NA)</li>
+                            <li>Update only that row's Location; write back to the same file</li>
+                            <li>Print required message: updated success or "Change not required"</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-block python-code">def update_location(student_id):
+    """
+    Update student location based on ID range if location is blank.
+    
+    Args:
+        student_id (int): Student ID to update
+    """
+    # Location mapping based on check_studentid return values
+    location_mapping = {
+        1: "Mangalore",
+        2: "Kolkata", 
+        3: "Chennai",
+        4: "Mumbai",
+        5: "NA"
+    }
+    
+    # Read the text file
+    lines = []
+    with open('StudentData5.txt', 'r') as file:
+        lines = file.readlines()
+    
+    # Find the student with the given ID
+    student_found = False
+    for i, line in enumerate(lines):
+        if i == 0:  # Skip header line
+            continue
+            
+        # Split the line by comma to get individual fields
+        fields = line.strip().split(',')
+        if len(fields) >= 15:  # Ensure we have all fields including Location
+            current_student_id = int(fields[0])
+            
+            if current_student_id == student_id:
+                student_found = True
+                location = fields[14]  # Location is the 15th field (index 14)
+                
+                # Check if location is present (not empty)
+                if location.strip() == '':
+                    # Location is not present, need to update
+                    bucket = check_studentid(student_id)
+                    new_location = location_mapping[bucket]
+                    
+                    # Update the location in the line
+                    fields[14] = new_location
+                    lines[i] = ','.join(fields) + '\n'
+                    
+                    # Write back to file
+                    with open('StudentData5.txt', 'w') as file:
+                        file.writelines(lines)
+                    
+                    print(f"Location for {student_id} updated as {new_location} successfully")
+                else:
+                    # Location is already present
+                    print("Change not required for Location")
+                break
+    
+    if not student_found:
+        print(f"Student with ID {student_id} not found")
+
+# Example usage:
+# update_location(82)  # This will update location for student ID 82 if not present
+# update_location(81)  # This will show "Change not required" since location already exists</div>
+                </div>
+            </section>
+
+            <!-- Unix Shell Script Questions Section -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">🔧</div>
+                    Unix Shell Script Questions
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-database"></i>
+                        Data Processing Questions
+                    </h3>
+
+                    <div class="question-card">
+                        <span class="question-number">Unix Q1</span>
+                        <h3 class="question-title">Clean Data (DOB + Location)</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Read CSV line-by-line using while IFS="," read</li>
+                                <li>Normalize DOB → convert yy to yyyy</li>
+                                <li>Replace missing Location with "Delhi"</li>
+                                <li>Write cleaned output to ModifiedData.txt</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-StudentData2.txt}"
+OUTPUT="${2:-ModifiedData.txt}"
+
+echo "[Q1] Writing corrected file to: $OUTPUT"
+
+first=1
+: > "$OUTPUT"  # truncate
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  if [ $first -eq 1 ]; then
+    echo "$id,$age,$dob,$gender,$socio,$school,$grade,$att,$gpa,$disc,$act,$parent,$grad,$drop,$loc" >> "$OUTPUT"
+    first=0
+    continue
+  fi
+
+  # normalize delimiter in DOB to '-'
+  dob="${dob//\//-}"
+
+  # split date
+  dd=""; mm=""; yy=""
+  IFS="-" read -r dd mm yy <<< "$dob"
+
+  # if year has 2 digits, prefix '20'
+  if [ -n "${yy:-}" ] && [ "${#yy}" -eq 2 ]; then
+    yy="20${yy}"
+  fi
+  if [ -n "$dd" ] && [ -n "$mm" ] && [ -n "$yy" ]; then
+    dob_fixed="${dd}-${mm}-${yy}"
+  else
+    dob_fixed="$dob"
+  fi
+
+  # fill missing location
+  if [ -z "${loc:-}" ]; then
+    loc="Delhi"
+  fi
+
+  echo "$id,$age,$dob_fixed,$gender,$socio,$school,$grade,$att,$gpa,$disc,$act,$parent,$grad,$drop,$loc" >> "$OUTPUT"
+done < "$INPUT"
+
+echo "Done."</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Unix Q2</span>
+                        <h3 class="question-title">Average Discipline by Parental Care</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Read modified file, skip header</li>
+                                <li>Group rows by ParentalCare</li>
+                                <li>Sum discipline incidents and count rows</li>
+                                <li>Print average incidents per parental care level</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A SUM
+declare -A CNT
+
+# integer average (use bc for decimal if needed)
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  SUM["$parent"]=$(( ${SUM["$parent"]:-0} + ${disc:-0} ))
+  CNT["$parent"]=$(( ${CNT["$parent"]:-0} + 1 ))
+done < "$INPUT"
+
+# print sorted by parental care
+for k in "${!CNT[@]}"; do
+  # decimal average:
+  avg=$(echo "scale=2; ${SUM[$k]} / ${CNT[$k]}" | bc)
+  printf "%s -> Average Discipline = %s\n" "$k" "$avg"
+done | sort</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Unix Q3</span>
+                        <h3 class="question-title">Total Incidents by School Type</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Read modified file, skip header</li>
+                                <li>Group rows by SchoolType</li>
+                                <li>Add up discipline incidents for each type</li>
+                                <li>Print totals, sorted for clarity</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A TOTAL
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  TOTAL["$school"]=$(( ${TOTAL["$school"]:-0} + ${disc:-0} ))
+done < "$INPUT"
+
+for k in "${!TOTAL[@]}"; do
+  printf "%s -> Total Incidents = %s\n" "$k" "${TOTAL[$k]}"
+done | sort</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Unix Q4</span>
+                        <h3 class="question-title">Average GPA by SES × Parental Care</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Read modified file, skip header</li>
+                                <li>Use composite key = SES–ParentalCare</li>
+                                <li>Sum GPA values and count rows per key</li>
+                                <li>Compute and print averages per group</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A SUM
+declare -A CNT
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  key="${socio}-${parent}"
+  SUM["$key"]=$(echo "${SUM["$key"]:-0} + ${gpa:-0}" | bc)
+  CNT["$key"]=$(( ${CNT["$key"]:-0} + 1 ))
+done < "$INPUT"
+
+for k in "${!CNT[@]}"; do
+  avg=$(echo "scale=4; ${SUM[$k]} / ${CNT[$k]}" | bc)
+  printf "%s -> Avg GPA = %s\n" "$k" "$avg"
+done | sort</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Unix Q5</span>
+                        <h3 class="question-title">Dropout Rate by Location</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Read modified file, skip header</li>
+                                <li>Count total students per location</li>
+                                <li>Count dropouts using DropoutFlag</li>
+                                <li>Calculate dropout rate = dropped ÷ total × 100</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A TOTAL
+declare -A DROPS
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  TOTAL["$loc"]=$(( ${TOTAL["$loc"]:-0} + 1 ))
+  DROPS["$loc"]=$(( ${DROPS["$loc"]:-0} + ${drop:-0} ))
+done < "$INPUT"
+
+for k in "${!TOTAL[@]}"; do
+  rate=$(echo "scale=2; (${DROPS[$k]} / ${TOTAL[$k]}) * 100" | bc)
+  printf "%s -> Dropout Rate = %s%%  (dropped=%s / total=%s)\n" "$k" "$rate" "${DROPS[$k]}" "${TOTAL[$k]}"
+done | sort</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-search"></i>
+                        Data Analysis Questions
+                    </h3>
+
+                    <div class="question-card">
+                        <span class="question-number">Normal Unix Q1</span>
+                        <h3 class="question-title">Students born in May</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Extract DOB column and filter rows with month = May</li>
+                                <li>Display ID, Age, DOB, Gender, SES, SchoolType, Discipline, ParentalCare</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+echo "Students born in May:"
+echo "ID,Age,DOB,Gender,SES,SchoolType,Discipline,ParentalCare"
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  
+  # Extract month from DOB (assuming format DD-MM-YYYY)
+  month=$(echo "$dob" | cut -d'-' -f2)
+  
+  if [ "$month" = "05" ] || [ "$month" = "5" ]; then
+    printf "%s,%s,%s,%s,%s,%s,%s,%s\n" "$id" "$age" "$dob" "$gender" "$socio" "$school" "$disc" "$parent"
+  fi
+done < "$INPUT"</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Normal Unix Q2</span>
+                        <h3 class="question-title">Students by Location × Gender</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Sort data by Location and Gender</li>
+                                <li>Group rows by Location and Gender</li>
+                                <li>Count total students in each group</li>
+                                <li>Display in decreasing order</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A COUNT
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  key="${loc}-${gender}"
+  COUNT["$key"]=$(( ${COUNT["$key"]:-0} + 1 ))
+done < "$INPUT"
+
+echo "Students by Location × Gender (decreasing order):"
+for k in "${!COUNT[@]}"; do
+  printf "%s -> %s students\n" "$k" "${COUNT[$k]}"
+done | sort -t'>' -k2 -nr</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Normal Unix Q3</span>
+                        <h3 class="question-title">Available School Types</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Extract SchoolType column</li>
+                                <li>Remove duplicates with uniq</li>
+                                <li>Sort alphabetically</li>
+                                <li>Display all unique school types</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+echo "Available School Types:"
+tail -n +2 "$INPUT" | cut -d',' -f6 | sort | uniq</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Normal Unix Q4</span>
+                        <h3 class="question-title">Students by Location × SchoolType</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Sort rows by Location and SchoolType</li>
+                                <li>Group by Location–SchoolType pair</li>
+                                <li>Count total students per group</li>
+                                <li>Display in increasing order</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+declare -A COUNT
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  key="${loc}-${school}"
+  COUNT["$key"]=$(( ${COUNT["$key"]:-0} + 1 ))
+done < "$INPUT"
+
+echo "Students by Location × SchoolType (increasing order):"
+for k in "${!COUNT[@]}"; do
+  printf "%s -> %s students\n" "$k" "${COUNT[$k]}"
+done | sort -t'>' -k2 -n</div>
+                    </div>
+
+                    <div class="question-card">
+                        <span class="question-number">Normal Unix Q5</span>
+                        <h3 class="question-title">Second Highest Discipline Incidents</h3>
+                        
+                        <div class="info-box">
+                            <div class="box-title">
+                                <i class="fas fa-tasks"></i>
+                                Requirements
+                            </div>
+                            <ul class="feature-list bash-list">
+                                <li>Extract ID, SchoolType, Discipline fields</li>
+                                <li>Find unique Discipline values and sort descending</li>
+                                <li>Pick the second highest value</li>
+                                <li>Display student details with that value</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block bash-code">#!/usr/bin/env bash
+set -u
+
+INPUT="${1:-ModifiedData.txt}"
+
+# Find second highest discipline value
+second_highest=$(tail -n +2 "$INPUT" | cut -d',' -f10 | sort -nr | uniq | sed -n '2p')
+
+echo "Second highest discipline incidents: $second_highest"
+echo "Students with this value:"
+echo "ID,SchoolType,Discipline"
+
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  [ "$id" = "StudentID" ] && continue
+  
+  if [ "$disc" = "$second_highest" ]; then
+    printf "%s,%s,%s\n" "$id" "$school" "$disc"
+  fi
+done < "$INPUT"</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhancement Descriptions Section -->
+            <section class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">⚡</div>
+                    Enhancement Categories
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-sync-alt"></i>
+                        Personal Enhancement - Incremental Processing
+                    </h3>
+                    
+                    <div class="success-box">
+                        <div class="box-title">
+                            <i class="fas fa-rocket"></i>
+                            Features
+                        </div>
+                        <ul class="feature-list">
+                            <li>Add incremental processing with a bookmark (state/last_line.txt) to read only new rows since last run</li>
+                            <li>Maintain persisted totals per SchoolType in state/q3_totals.csv and update them on each increment</li>
+                            <li>Provide utility scripts: setup, update, show for safe recovery and easy ops</li>
+                            <li>Output sorted and human-readable results</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Group Enhancement - Robust Processing
+                    </h3>
+                    
+                    <div class="success-box">
+                        <div class="box-title">
+                            <i class="fas fa-cogs"></i>
+                            Features
+                        </div>
+                        <ul class="feature-list">
+                            <li><strong>Header-aware & normalized logic:</strong> Detects StudentID/Location by name (no hardcore index), tolerant to case/spacing; unit tests confirm correct column discovery</li>
+                            <li><strong>Correctness rules & controls:</strong> Treats ""/NA/na/null/None as missing; supports overwrite=True (force change) and simulate=True (dry run); tests include blank/NA updates and overwrite behavior</li>
+                            <li><strong>Safe I/O with summary:</strong> Writes to a clean output file, robust error handling (missing/permission issues), and prints a clear summary (updated/unchanged/invalid); tests cover non-existent file and no-write simulation</li>
+                            <li><strong>Config & batch verified:</strong> Runtime mapping override ("1:City,...") and batch updates for multiple IDs; tests validate custom mapping, mixed-type ID inputs, and edge IDs</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Scroll to top button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme from localStorage
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Progress tracking
+        function trackProgress() {
+            let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+            if (!visitedPages.includes('programming-questions.html')) {
+                visitedPages.push('programming-questions.html');
+                localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            trackProgress();
+        });
+    </script>
+</body>
+</html>
