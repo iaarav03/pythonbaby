@@ -2863,6 +2863,96 @@ f.write("text\n")
 f.tell()
 f.seek(offset, whence=0)   # 0=start, 1=current, 2=end</div>
         </section>
+    
+        <!-- Added: Incremental Q3 Totals Bash Script -->
+        <section class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-terminal"></i>
+                Incremental Q3 Totals Bash Script
+            </h2>
+            <div class="content-text">
+                The following script updates incident totals incrementally and maintains a bookmark of processed lines.
+            </div>
+            <div class="code-block">INPUT="${1:-ModifiedData.txt}"
+STATE_DIR="state"
+LAST_FILE="$STATE_DIR/last_line.txt"
+TOT_FILE="$STATE_DIR/q3_totals.csv"
+
+# Safety checks
+[ -f "$INPUT" ]     || { echo "ERROR: $INPUT not found"; exit 2; }
+[ -f "$LAST_FILE" ] || { echo "ERROR: $LAST_FILE not found (run ./inc_setup.sh)"; exit 2; }
+[ -f "$TOT_FILE" ]  || { echo "ERROR: $TOT_FILE not found (run ./inc_setup.sh)"; exit 2; }
+
+# Get current bookmark and file line count
+last_line=$(cat "$LAST_FILE")
+total_lines=$(wc -l &lt; "$INPUT")
+
+# If the file shrank or header missing, ask to reset
+if [ "$total_lines" -lt 1 ]; then
+  echo "ERROR: $INPUT seems empty or invalid."
+  exit 2
+fi
+if [ "$total_lines" -lt "$last_line" ]; then
+  echo "Detected file shrink/replace (total=$total_lines &lt; last=$last_line)."
+  echo "Run ./inc_q3_reset.sh (or ./inc_q3_recompute_full.sh) to recover."
+  exit 3
+fi
+
+# No new rows? Nothing to do.
+if [ "$total_lines" -le "$last_line" ]; then
+  echo "No new rows. (bookmark=$last_line, total=$total_lines)"
+  exit 0
+fi
+
+echo "New rows to process: $(( total_lines - last_line ))"
+
+# Load existing totals into an associative array
+declare -A TOTAL
+first=1
+while IFS="," read -r stype total
+do
+  if [ $first -eq 1 ]; then first=0; continue; fi  # skip header in totals file
+  TOTAL["$stype"]="${total:-0}"
+done &lt; "$TOT_FILE"
+
+# Process only the delta (skip already processed lines; header is line 1)
+delta="$STATE_DIR/delta.tmp"
+tail -n +"$((last_line+1))" "$INPUT" &gt; "$delta"
+
+# read existing totals into map
+declare -A TOTAL
+first=1
+while IFS="," read -r stype total; do
+  if [ $first -eq 1 ]; then first=0; continue; fi
+  TOTAL["$stype"]="${total:-0}"
+done &lt; "$TOT_FILE"
+
+# process delta WITHOUT a pipe
+while IFS="," read -r id age dob gender socio school grade att gpa disc act parent grad drop loc
+do
+  school="${school:-Unknown}"
+  # ensure disc is integer
+  if ! [[ $disc =~ ^[0-9]+$ ]]; then disc=0; fi
+  TOTAL["$school"]=$(( ${TOTAL["$school"]:-0} + disc ))
+done &lt; "$delta"
+
+rm -f "$delta"
+
+# write back totals (sorted)
+{
+  echo "SchoolType,TotalIncidents"
+  for k in "${!TOTAL[@]}"; do
+    printf "%s,%s\n" "$k" "${TOTAL[$k]}"
+  done | sort
+} &gt; "$TOT_FILE"
+
+# Move bookmark to end of file
+echo "$total_lines" &gt; "$LAST_FILE"
+
+echo "Updated:"
+echo "  - $TOT_FILE (totals refreshed)"
+echo "  - $LAST_FILE (bookmark -&gt; line $total_lines)"</div>
+        </section>
     </div>
 
     <!-- Scroll to top button -->
